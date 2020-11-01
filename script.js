@@ -13,7 +13,7 @@ function preload() {
 function setup() {
     createCanvas(400, 400);
 
-    WFC = Field.createFromImage(originImage, N = 2);
+    WFC = Field.createFromImage(originImage, N = 3);
 
     WFC.clearGrid();
 

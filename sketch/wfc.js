@@ -50,6 +50,7 @@ class Field {
             for (let patB of patterns) {
                 for (let direction = 0; direction < 4; direction++) {
                     if (Matcher.tileCompatible(JSON.parse(patA), JSON.parse(patB), direction)) {
+                        console.log(patterns.indexOf(patA), "can be", direction, "of", patterns.indexOf(patB));
                         matcher.addPattern(patterns.indexOf(patA), patterns.indexOf(patB), direction);
                     }
                 }
@@ -139,7 +140,7 @@ class Field {
 
                 console.log(nStates.length);
 
-                if (!arrayIsEqual(pStates, nStates) && nStates.length > 0) {
+                if (pStates.length != nStates.length && nStates.length > 0) {
                     this.grid[i][j].states = nStates;
 
                     if (nStates.length == 1) {

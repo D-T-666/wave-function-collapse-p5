@@ -15,16 +15,19 @@ class Matcher {
         let nStates = my_states;
 
         for (let direction = 0; direction < 4; direction++) {
+            // get all the possible neighbors for each neighbor in the oposite direction
             let neighbor_posibilities = [];
             for (let state of neighbor_states[direction]) {
                 neighbor_posibilities.push(...this.patterns[state][(direction + 2) % 4]);
             }
+
             let update_states = [];
             for (let state of nStates) {
                 if (neighbor_posibilities.indexOf(state) != -1) {
                     update_states.push(state);
                 }
             }
+            // console.log(nStates);
             nStates = update_states;
         }
 
@@ -35,31 +38,30 @@ class Matcher {
         let A = 0;
         let B = 1;
 
-        switch (direction) {
-            case 0:
-                A = [...a];
-                A.pop();
-                B = [...b];
-                B.shift();
-            case 1:
-                A = [...a];
-                A = transpose2DArray(A);
-                A.pop();
-                B = [...b];
-                B = transpose2DArray(B);
-                B.shift();
-            case 2:
-                A = [...a];
-                A.shift();
-                B = [...b];
-                B.pop();
-            case 3:
-                A = [...a];
-                A = transpose2DArray(A);
-                A.pop();
-                B = [...b];
-                B = transpose2DArray(B);
-                B.shift();
+        if (direction == 0) {
+            A = [...a];
+            A.pop();
+            B = [...b];
+            B.shift();
+        } else if (direction == 1) {
+            A = [...a];
+            A = transpose2DArray(A);
+            A.pop();
+            B = [...b];
+            B = transpose2DArray(B);
+            B.shift();
+        } else if (direction == 2) {
+            A = [...a];
+            A.shift();
+            B = [...b];
+            B.pop();
+        } else if (direction == 3) {
+            A = [...a];
+            A = transpose2DArray(A);
+            A.shift();
+            B = [...b];
+            B = transpose2DArray(B);
+            B.pop();
         }
 
         return arrayIsEqual(A, B);
