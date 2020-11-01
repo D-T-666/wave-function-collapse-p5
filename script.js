@@ -4,7 +4,7 @@ let originImage;
 
 function preload() {
     originImage = loadImage(
-        "data/demo-5.png",
+        "data/demo-3.png",
         () => console.log("succesfully loaded the image"),
         () => console.log("couldn't loaded the image")
     );
