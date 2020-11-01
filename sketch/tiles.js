@@ -19,18 +19,14 @@ class Tile {
     }
 
     slowReveal(dir = 0) {
-        this.reveal_direction = dir % 2;
+        this.reveal_direction = dir;
         this.reveal_timer_max = 30;
         this.reveal_timer = this.reveal_timer_max;
     }
 
     display() {
         if (this.hasCollapsed()) {
-            // console.log(this.color);
-            if (this.color == undefined) {
-                // console.log(this.states);
-            }
-            fill(this.color || color(255, 0, 255));
+            fill(this.color);
         } else {
             fill(255 - this.states.length / this.total_states * 204);
         }
@@ -48,6 +44,12 @@ class Tile {
                 x += (this.size - w) / 2;
             }
             if (this.reveal_direction == 1) {
+                h = h * (1 - this.reveal_timer / this.reveal_timer_max);
+                y += (this.size - h) / 2;
+            }
+            if (this.reveal_direction == 2) {
+                w = w * (1 - this.reveal_timer / this.reveal_timer_max);
+                x += (this.size - w) / 2;
                 h = h * (1 - this.reveal_timer / this.reveal_timer_max);
                 y += (this.size - h) / 2;
             }

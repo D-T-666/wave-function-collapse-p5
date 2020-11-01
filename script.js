@@ -13,7 +13,7 @@ function preload() {
 function setup() {
     createCanvas(400, 400);
 
-    WFC = Field.createFromImage(originImage, N = 3);
+    WFC = Field.createFromImage(originImage, N = 2);
 
     WFC.clearGrid();
 
@@ -34,5 +34,18 @@ function draw() {
         }
     }
 
-    WFC.updateStep();
+    // displayPattern(WFC.patterns[floor(frameCount / 20)]);
+
+    if (frameCount % 20 == 0)
+        WFC.updateStep();
+}
+
+function displayPattern(patt) {
+    const size = 32;
+    for (let i = 0; i < JSON.parse(patt).length; i++) {
+        for (let j = 0; j < JSON.parse(patt)[0].length; j++) {
+            fill(...JSON.parse(patt)[i][j]);
+            rect(i * size, j * size, size, size);
+        }
+    }
 }

@@ -38,8 +38,8 @@ class Field {
                     }
                 }
 
-                if (patterns.indexOf(pattern) == -1) {
-                    patterns.push(pattern);
+                if (!patterns.includes(JSON.stringify(pattern))) {
+                    patterns.push(JSON.stringify(pattern));
                 }
             }
         }
@@ -49,7 +49,7 @@ class Field {
         for (let patA of patterns) {
             for (let patB of patterns) {
                 for (let direction = 0; direction < 4; direction++) {
-                    if (Matcher.tileCompatible(patA, patB, direction)) {
+                    if (Matcher.tileCompatible(JSON.parse(patA), JSON.parse(patB), direction)) {
                         matcher.addPattern(patterns.indexOf(patA), patterns.indexOf(patB), direction);
                     }
                 }
@@ -112,7 +112,8 @@ class Field {
                     this.grid[iMin][jMin].collapse();
                     this.affected = this.getNeighborIndicies(iMin, jMin);
                     if (this.grid[iMin][jMin].states.length == 1)
-                        this.grid[iMin][jMin].color = color(...this.patterns[this.grid[iMin][jMin].states[0]][0][0]);
+                        // console.log(this.patterns[this.grid[iMin][jMin].states[0]]);
+                        this.grid[iMin][jMin].color = color(...JSON.parse(this.patterns[this.grid[iMin][jMin].states[0]])[0][0]);
                     else
                         this.grid[iMin][jMin].color = color(255, 0, 255);
                     this.grid[iMin][jMin].slowReveal();
@@ -130,19 +131,21 @@ class Field {
                 for (let neighbor of neighborIndicies) {
                     let [iN, jN] = neighbor;
 
-                    // console.log(iN, jN);
-
                     neighbors.push(this.grid[iN][jN].states);
                 }
 
                 let pStates = this.grid[i][j].states;
                 let nStates = this.matcher.match(pStates, neighbors);
 
-                if (!arrayIsEqual(pStates, nStates)) {
+                console.log(nStates.length);
+
+                if (!arrayIsEqual(pStates, nStates) && nStates.length > 0) {
                     this.grid[i][j].states = nStates;
 
-                    if (nStates.length == 1)
-                        this.grid[i][j].color = color(...this.patterns[nStates[0]][0][0]);
+                    if (nStates.length == 1) {
+                        this.grid[i][j].color = color(...JSON.parse(this.patterns[nStates[0]])[0][0]);
+                        this.grid[i][j].slowReveal(2);
+                    }
 
                     for (let neighbor of neighborIndicies) {
                         if (nAffected.indexOf(neighbor) == -1 && this.affected.indexOf(neighbor)) {
