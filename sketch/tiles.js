@@ -69,7 +69,7 @@ class Tile {
             let spacing = this.size / 8;
             // let corner = ceil(spacing * 0.7);
             let corner = spacing * 1.3;
-            
+
             rect(
                 x + spacing / 2,
                 y + spacing / 2,
@@ -79,10 +79,21 @@ class Tile {
             );
 
         } else {
-            let br = (1 - this.states.length / this.total_states) * 0.8 + 0.2;
-            fill(255, br * 127);
-            noStroke();
-            ellipse(x + w / 2, y + h / 2, w * .4, h * .4);
+            if (this.states.length < 11) {
+                const sLen = this.states.length - 1;
+
+                colorMode(HSB, 255, 255, 255);
+                fill(sLen * 20, 255, 255, 1 - sLen / 10);
+                textAlign(CENTER, CENTER);
+                text(sLen, x + w / 2, y + h / 2);
+                colorMode(RGB);
+
+
+                // let br = (1 - this.states.length / this.total_states) * 0.8 + 0.2;
+                // fill(255, br * 127);
+                // noStroke();
+                // ellipse(x + w / 2, y + h / 2, w * .4, h * .4);
+            }
         }
 
     }
