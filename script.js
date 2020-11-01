@@ -13,12 +13,14 @@ function preload() {
 function setup() {
     createCanvas(400, 400);
 
-    WFC = Field.createFromImage(originImage);
+    WFC = Field.createFromImage(originImage, N = 3);
 
     WFC.clearGrid();
 
-    WFC.grid[0][0].collapse();
-    WFC.grid[0][0].slowReveal(1);
+    WFC.getLowestEntropyLocation();
+
+    // WFC.grid[0][0].collapse();
+    // WFC.grid[0][0].slowReveal(1);
 
     console.log(WFC);
 }
@@ -31,4 +33,6 @@ function draw() {
             elt.display();
         }
     }
+
+    WFC.updateStep();
 }

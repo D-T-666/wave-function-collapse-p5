@@ -12,7 +12,23 @@ class Matcher {
     }
 
     match(my_states, neighbor_states) {
+        let nStates = my_states;
 
+        for (let direction = 0; direction < 4; direction++) {
+            let neighbor_posibilities = [];
+            for (let state of neighbor_states[direction]) {
+                neighbor_posibilities.push(...this.patterns[state][(direction + 2) % 4]);
+            }
+            let update_states = [];
+            for (let state of nStates) {
+                if (neighbor_posibilities.indexOf(state) != -1) {
+                    update_states.push(state);
+                }
+            }
+            nStates = update_states;
+        }
+
+        return nStates;
     }
 
     static tileCompatible(a, b, direction) {
@@ -63,4 +79,12 @@ function transpose2DArray(arr) {
 
 function arrayIsEqual(a, b) {
     return JSON.stringify(a) == JSON.stringify(b);
+}
+
+function Min(lis) {
+    let minmum = Infinity;
+    for (let elt of lis) {
+        minmum = (elt < minmum) ? elt : minmum;
+    }
+    return minmum;
 }

@@ -10,18 +10,30 @@ class Tile {
         this.states = [random(this.states)];
     }
 
+    hasCollapsed() {
+        return this.states.length < 2;
+    }
+
+    getEntropy() {
+        return (this.states.length > 0) ? this.states.length : Infinity;
+    }
+
     slowReveal(dir = 0) {
         this.reveal_direction = dir % 2;
         this.reveal_timer_max = 30;
         this.reveal_timer = this.reveal_timer_max;
     }
 
-    isCollapsed() {
-        return this.states.length < 2;
-    }
-
     display() {
-        fill(255 - this.states.length / this.total_states * 204);
+        if (this.hasCollapsed()) {
+            // console.log(this.color);
+            if (this.color == undefined) {
+                // console.log(this.states);
+            }
+            fill(this.color || color(255, 0, 255));
+        } else {
+            fill(255 - this.states.length / this.total_states * 204);
+        }
         stroke(255, 100);
         strokeWeight(1);
 
