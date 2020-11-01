@@ -13,7 +13,7 @@ function preload() {
 function setup() {
     createCanvas(400, 400);
 
-    WFC = Field.createFromImage(originImage, N = 3);
+    WFC = Field.createFromImage(originImage, N = 3, Symetry = true, W = 32, H = 32);
 
     WFC.clearGrid();
 
@@ -36,7 +36,7 @@ function draw() {
 
     // displayPattern(WFC.patterns[floor(frameCount / 20)]);
 
-    if (frameCount % 20 == 0)
+    if (frameCount % 10 == 0)
         WFC.updateStep();
 }
 

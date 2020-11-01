@@ -8,7 +8,7 @@ class Field {
         this.affected = [];
     }
 
-    static createFromImage(img, N = 2, Symetry = false, W = 16, H = 16) {
+    static createFromImage(img, N = 2, Symetry = true, W = 16, H = 16) {
         img.loadPixels();
 
         const iW = img.width;
@@ -38,8 +38,21 @@ class Field {
                     }
                 }
 
-                if (!patterns.includes(JSON.stringify(pattern))) {
-                    patterns.push(JSON.stringify(pattern));
+                if (Symetry) {
+                    for (let rotation = 0; rotation < 4; rotation++) {
+                        pattern = transpose2DArray(pattern);
+                        if (!patterns.includes(JSON.stringify(pattern))) {
+                            patterns.push(JSON.stringify(pattern));
+                        }
+                        pattern = flip1DArray(pattern);
+                        if (!patterns.includes(JSON.stringify(pattern))) {
+                            patterns.push(JSON.stringify(pattern));
+                        }
+                    }
+                } else {
+                    if (!patterns.includes(JSON.stringify(pattern))) {
+                        patterns.push(JSON.stringify(pattern));
+                    }
                 }
             }
         }
@@ -69,7 +82,7 @@ class Field {
                 for (let k = 0; k < this.patterns.length; k++) {
                     states.push(k);
                 }
-                this.grid[i][j] = new Tile(states, this.patterns.length, i, j, 24);
+                this.grid[i][j] = new Tile(states, this.patterns.length, i, j, 16);
             }
         }
     }
@@ -110,7 +123,7 @@ class Field {
                 let [iMin, jMin] = this.getLowestEntropyLocation();
 
                 if (!this.grid[iMin][jMin].hasCollapsed()) {
-                    this.grid[iMin][jMin].collapse();
+                    this.grid[iMin][jMin].collapse(3);
                     this.affected = this.getNeighborIndicies(iMin, jMin);
                     if (this.grid[iMin][jMin].states.length == 1)
                         // console.log(this.patterns[this.grid[iMin][jMin].states[0]]);
@@ -118,10 +131,12 @@ class Field {
                     else
                         this.grid[iMin][jMin].color = color(255, 0, 255);
                     this.grid[iMin][jMin].slowReveal();
+                } else if (this.grid[iMin][jMin].states.length == 1) {
+                    this.affected = this.getNeighborIndicies(iMin, jMin);
                 }
             }
         }
-        if (this.affected.length > 0) {
+        while (this.affected.length > 0) {
             let nAffected = [];
 
             for (let affected of this.affected) {
@@ -138,7 +153,7 @@ class Field {
                 let pStates = this.grid[i][j].states;
                 let nStates = this.matcher.match(pStates, neighbors);
 
-                console.log(nStates.length);
+                // console.log(nStates.length);
 
                 if (pStates.length != nStates.length && nStates.length > 0) {
                     this.grid[i][j].states = nStates;
@@ -150,7 +165,7 @@ class Field {
 
                     for (let neighbor of neighborIndicies) {
                         if (nAffected.indexOf(neighbor) == -1 && this.affected.indexOf(neighbor)) {
-                            nAffected.push(neighbor)
+                            nAffected.push(neighbor);
                         }
                     }
                 }

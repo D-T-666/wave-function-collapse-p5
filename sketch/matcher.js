@@ -79,6 +79,14 @@ function transpose2DArray(arr) {
     return nArr;
 }
 
+function flip1DArray(arr) {
+    let nArr = [];
+    for (let i = arr.length - 1; i > -1; i--) {
+        nArr.push(arr[i]);
+    }
+    return nArr;
+}
+
 function arrayIsEqual(a, b) {
     return JSON.stringify(a) == JSON.stringify(b);
 }
