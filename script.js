@@ -11,13 +11,13 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(400, 400);
+    createCanvas(800, 800);
 
-    WFC = Field.createFromImage(originImage, N = 3, Symetry = true, W = 16, H = 16);
+    WFC = Field.createFromImage(originImage, N = 3, Symetry = true, W = 32, H = 32);
 }
 
 function draw() {
-    background(51);
+    background('#252525');
 
     for (let row of WFC.grid) {
         for (let elt of row) {

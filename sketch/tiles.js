@@ -3,6 +3,9 @@
 */
 
 class Tile {
+    static spacing = 2;
+    static corner = 5;
+
     constructor(states, total_states, x, y, size) {
         this.states = states;
         this.total_states = total_states;
@@ -66,7 +69,14 @@ class Tile {
 
             this.reveal_timer = lerp(this.reveal_timer, 0, 0.08);
 
-            rect(x, y, w, h);
+            rect(
+                x + Tile.spacing / 2,
+                y + Tile.spacing / 2,
+                w - Tile.spacing,
+                h - Tile.spacing,
+                Tile.corner
+            );
+
         } else {
             let br = 1 - this.states.length / this.total_states;
             fill(255, br * 255);
