@@ -1,9 +1,13 @@
 body {
-    background-color: #252525;
+    background-color: #0f0f25;
+    overflow: hidden;
 }
 
 canvas {
-    margin-left: 50vw;
-    margin-top: 50vh;
-    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+* {
+    margin:0;
+    padding:0;
 }

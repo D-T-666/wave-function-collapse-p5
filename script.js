@@ -1,3 +1,5 @@
+let canvas;
+
 let WFC;
 
 let originImage;
@@ -11,13 +13,19 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(800, 800);
+    canvas = createCanvas(displayWidth, displayHeight);
 
-    WFC = Field.createFromImage(originImage, N = 3, Symetry = true, W = 32, H = 32);
+    WFC = Field.createFromImage(
+        originImage,
+        N = 3,
+        symmetry = true,
+        w = 32,
+        h = 18
+    );
 }
 
 function draw() {
-    background('#252525');
+    background('#0f0f25');
 
     for (let row of WFC.grid) {
         for (let elt of row) {
@@ -28,4 +36,10 @@ function draw() {
     if (frameCount % 30 == 0)
         WFC.updateStep();
 
+}
+
+function keyPressed() {
+    if (keyCode == 122) {
+        // Resize when F11 is pressed
+    }
 }

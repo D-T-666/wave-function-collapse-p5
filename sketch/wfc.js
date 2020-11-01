@@ -10,7 +10,7 @@ class Field {
         this.clearGrid();
     }
 
-    static createFromImage(img, N = 2, Symetry = true, W = 16, H = 16) {
+    static createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
         // Load the pixels of the p5.Image specified
         img.loadPixels();
 
@@ -49,16 +49,16 @@ class Field {
 
                 // loop over a NxN box with the offset i,j in the image 
                 // to extract a single pattern
-                for (let u = 0; u < N; u++) {
+                for (let u = 0; u < n; u++) {
                     pattern[u] = [];
-                    for (let v = 0; v < N; v++) {
+                    for (let v = 0; v < n; v++) {
                         pattern[u][v] = rgba_map[(i + u) % iH][(j + v) % iW];
                     }
                 }
 
-                // Now that we have our pattern extracted wecheck if the Symmetry is enabled.
-                if (Symetry) {
-                    // If Symetry is enabled, we need to do all the rotations and reflections.
+                // Now that we have our pattern extracted wecheck if the symmetry is enabled.
+                if (symmetry) {
+                    // If symmetry is enabled, we need to do all the rotations and reflections.
                     // Loop over all directions.
                     for (let rotation = 0; rotation < 4; rotation++) {
                         // Tanspose the pattern
@@ -79,7 +79,7 @@ class Field {
                         // If you think about it Transpose+Flip = Rot90°
                     }
                 } else {
-                    // If we're not doing any Symetry, We can just
+                    // If we're not doing any symmetry, We can just
                     // check if this instance of the pattern is in the
                     // patterns list. If not, add it to the list
                     if (!patterns.includes(JSON.stringify(pattern))) {
@@ -107,7 +107,7 @@ class Field {
 
         // Return a Field object initialized with the patterns list,
         // matcher and the specified width and height
-        return new Field(patterns, matcher, W, H);
+        return new Field(patterns, matcher, w, h);
     }
 
     clearGrid() {
@@ -120,7 +120,7 @@ class Field {
                 for (let k = 0; k < this.patterns.length; k++) {
                     states.push(k);
                 }
-                this.grid[i][j] = new Tile(states, this.patterns.length, i, j, width / this.W);
+                this.grid[i][j] = new Tile(states, this.patterns.length, j, i, height / this.H);
             }
         }
     }
@@ -213,7 +213,7 @@ class Field {
             let tiles_collapsed = 0;
 
             // While there are tiles to be updated and no tiles have collapsed 
-            while (this.affected.length > 0 && tiles_collapsed < 1) {
+            while (this.affected.length > 0 && tiles_collapsed < 100) {
                 // Initialize the new affected array
                 let nAffected = [];
 

@@ -3,9 +3,6 @@
 */
 
 class Tile {
-    static spacing = 2;
-    static corner = 5;
-
     constructor(states, total_states, x, y, size) {
         this.states = states;
         this.total_states = total_states;
@@ -25,7 +22,7 @@ class Tile {
     }
 
     getEntropy() {
-        // Returns infity if the tile has collapsed and returns the 
+        // Returns infinity if the tile has collapsed and returns the 
         // length of the states if the tile hasn't collapsed
         return (this.states.length > 1) ? this.states.length : Infinity;
     }
@@ -69,17 +66,21 @@ class Tile {
 
             this.reveal_timer = lerp(this.reveal_timer, 0, 0.08);
 
+            let spacing = this.size / 8;
+            // let corner = ceil(spacing * 0.7);
+            let corner = spacing * 1.3;
+            
             rect(
-                x + Tile.spacing / 2,
-                y + Tile.spacing / 2,
-                w - Tile.spacing,
-                h - Tile.spacing,
-                Tile.corner
+                x + spacing / 2,
+                y + spacing / 2,
+                w - spacing,
+                h - spacing,
+                corner
             );
 
         } else {
-            let br = 1 - this.states.length / this.total_states;
-            fill(255, br * 255);
+            let br = (1 - this.states.length / this.total_states) * 0.8 + 0.2;
+            fill(255, br * 127);
             noStroke();
             ellipse(x + w / 2, y + h / 2, w * .4, h * .4);
         }
