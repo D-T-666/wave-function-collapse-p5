@@ -68,10 +68,10 @@ class Tile {
 
             rect(x, y, w, h);
         } else {
-            fill(255 - this.states.length / this.total_states * 204);
-            // strokeWeight(4);
+            let br = 1 - this.states.length / this.total_states;
+            fill(255, br * 255);
             noStroke();
-            ellipse(x + w / 2, y + h / 2, w * .7, h * .7);
+            ellipse(x + w / 2, y + h / 2, w * .4, h * .4);
         }
 
     }
