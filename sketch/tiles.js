@@ -1,3 +1,7 @@
+/**
+ * Tile(states, total amount of states, x location, y location, width that will be display)
+*/
+
 class Tile {
     constructor(states, total_states, x, y, size) {
         this.states = states;
@@ -7,26 +11,35 @@ class Tile {
     }
 
     collapse() {
+        // Picks a random state and makes it the only state in the list
         this.states = [random(this.states)];
     }
 
     hasCollapsed() {
-        return this.states.length < 2;
+        // Checks if the length of the possible states is 1 
+        // which would mean that the tile has collapsed
+        return this.states.length == 1;
     }
 
     getEntropy() {
+        // Returns infity if the tile has collapsed and returns the 
+        // length of the states if the tile hasn't collapsed
         return (this.states.length > 1) ? this.states.length : Infinity;
     }
 
     slowReveal(dir = 0) {
+        // initiallizes some varialbes for animation
         this.reveal_direction = dir;
         this.reveal_timer_max = 30;
         this.reveal_timer = this.reveal_timer_max;
     }
 
     display() {
+        // set x coordinate to be the x index of the tile * the size of the tile 
         let x = (this.pos.x * this.size);
+        // set y coordinate to be the y index of the tile * the size of the tile 
         let y = (this.pos.y * this.size);
+        // Set w, h to size
         let w = (this.size);
         let h = (this.size);
 
@@ -55,9 +68,9 @@ class Tile {
 
             rect(x, y, w, h);
         } else {
-            stroke(255 - this.states.length / this.total_states * 204);
-            strokeWeight(4);
-            noFill();
+            fill(255 - this.states.length / this.total_states * 204);
+            // strokeWeight(4);
+            noStroke();
             ellipse(x + w / 2, y + h / 2, w * .7, h * .7);
         }
 

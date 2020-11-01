@@ -4,7 +4,7 @@ let originImage;
 
 function preload() {
     originImage = loadImage(
-        "data/demo-1.png",
+        "data/demo-5.png",
         () => console.log("succesfully loaded the image"),
         () => console.log("couldn't loaded the image")
     );
@@ -13,16 +13,7 @@ function preload() {
 function setup() {
     createCanvas(400, 400);
 
-    WFC = Field.createFromImage(originImage, N = 3, Symetry = true, W = 32, H = 32);
-
-    WFC.clearGrid();
-
-    WFC.getLowestEntropyLocation();
-
-    // WFC.grid[0][0].collapse();
-    // WFC.grid[0][0].slowReveal(1);
-
-    console.log(WFC);
+    WFC = Field.createFromImage(originImage, N = 3, Symetry = true, W = 16, H = 16);
 }
 
 function draw() {
@@ -34,18 +25,7 @@ function draw() {
         }
     }
 
-    // displayPattern(WFC.patterns[floor(frameCount / 20)]);
-
-    if (frameCount % 10 == 0)
+    if (frameCount % 30 == 0)
         WFC.updateStep();
-}
 
-function displayPattern(patt) {
-    const size = 32;
-    for (let i = 0; i < JSON.parse(patt).length; i++) {
-        for (let j = 0; j < JSON.parse(patt)[0].length; j++) {
-            fill(...JSON.parse(patt)[i][j]);
-            rect(i * size, j * size, size, size);
-        }
-    }
 }
