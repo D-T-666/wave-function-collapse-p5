@@ -12,7 +12,7 @@ function setup() {
     background(51);
 
     originImage = loadImage(
-        "data/demo-3.png",
+        "data/demo-1.png",
         () => createField(),
         () => console.log("couldn't loaded the image")
     );
