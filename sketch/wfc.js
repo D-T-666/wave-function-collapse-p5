@@ -80,7 +80,7 @@ class Field {
         const j = floor(random(0.25, 0.75) * this.W);
         this.grid[i][j].collapse();
         this.grid[i][j].color = color(...JSON.parse(this.patterns[this.grid[i][j].states[0]]));
-        // this.grid[i][j].slowReveal(2);
+        this.grid[i][j].slowReveal(2);
         this.affected = this.getNeighborIndicies(i, j);
     }
 
@@ -118,11 +118,8 @@ class Field {
                 this.grid[iMin][jMin].slowReveal();
             }
 
-            // Initialise tiles collapsed counter
-            let tiles_collapsed = 0;
-
             // While there are tiles to be updated and no tiles have collapsed 
-            while (this.affected.length > 0 && tiles_collapsed < 100) {
+            while (this.affected.length > 0) {
                 // Initialize the new affected array
                 let nAffected = [];
 
@@ -161,8 +158,6 @@ class Field {
                             // If the length of new states is 1, it means that
                             // the tile has collapsed
                             if (nStates.length == 1) {
-                                // Increment the tiles collapsed counter
-                                tiles_collapsed++;
                                 // Set the color of the tile to the coresponding paterns (0,0) tile
                                 this.grid[i][j].color = color(...JSON.parse(this.patterns[nStates[0]]));
                                 // Start the animation in the specified direction
