@@ -30,7 +30,7 @@ class Tile {
     slowReveal(dir = 0) {
         // initiallizes some varialbes for animation
         this.reveal_direction = dir;
-        this.reveal_timer_max = 30;
+        this.reveal_timer_max = 20;
         this.reveal_timer = this.reveal_timer_max;
     }
 
@@ -80,11 +80,12 @@ class Tile {
 
         } else {
             if (this.states.length < 11) {
-                const sLen = this.states.length - 1;
+                const sLen = this.states.length;
 
                 colorMode(HSB, 255, 255, 255);
-                fill(sLen * 20, 255, 255, 1 - sLen / 10);
+                fill(sLen * 12 + 50, 128, 255, 1 - sLen / 10);
                 textAlign(CENTER, CENTER);
+                textSize(this.size / 2);
                 text(sLen, x + w / 2, y + h / 2);
                 colorMode(RGB);
 

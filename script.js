@@ -4,9 +4,11 @@ let WFC;
 
 let originImage;
 
+let readyToGenerate = false;
+
 function preload() {
     originImage = loadImage(
-        "data/demo-3.png",
+        "data/demo-4.png",
         () => console.log("succesfully loaded the image"),
         () => console.log("couldn't loaded the image")
     );
@@ -14,28 +16,50 @@ function preload() {
 
 function setup() {
     canvas = createCanvas(displayWidth, displayHeight);
+    background(51);
 
-    WFC = Field.createFromImage(
+    originImage = loadImage(
+        "data/demo-1.png",
+        () => createField(),
+        () => console.log("couldn't loaded the image")
+    );
+
+}
+
+function createField() {
+    createFromImage(
         originImage,
         N = 3,
         symmetry = true,
-        w = 32,
-        h = 18
+        w = 32 * 2,
+        h = 18 * 2
+    ).then(
+        (field) => {
+            WFC = field;
+            WFC.seed();
+            readyToGenerate = true;
+            console.log("heai");
+        }
     );
 }
 
 function draw() {
-    background('#0f0f25');
+    // console.log("boop");
+    if (readyToGenerate) {
+        background('#0f0f25');
 
-    for (let row of WFC.grid) {
-        for (let elt of row) {
-            elt.display();
+        for (let row of WFC.grid) {
+            for (let elt of row) {
+                elt.display();
+            }
         }
+
+        if (frameCount % 20 == 0)
+            WFC.updateStep();
+    } else {
+        // fill(255);
+        // text("loading...", 100, 50 + random(height));
     }
-
-    if (frameCount % 30 == 0)
-        WFC.updateStep();
-
 }
 
 function keyPressed() {
