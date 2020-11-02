@@ -26,6 +26,7 @@ function createField() {
         symmetry = true,
         w = floor(width / 12),
         h = floor(height / 12)
+        
     ).then(
         (field) => {
             WFC = field;
@@ -41,7 +42,6 @@ function createField() {
 }
 
 function draw() {
-    // console.log("boop");
     if (readyToGenerate) {
 
         for (let row of WFC.grid) {
@@ -50,14 +50,7 @@ function draw() {
             }
         }
 
-        if (frameCount % 30 == 0)
+        if (frameCount % 1 == 0)
             WFC.updateStep();
-    }
-    // noLoop();
-}
-
-function keyPressed() {
-    if (keyCode == 122) {
-
     }
 }
