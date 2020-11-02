@@ -68,7 +68,7 @@ class Tile {
                     }
                 }
 
-                this.reveal_timer = lerp(this.reveal_timer, 0, 0.08);
+                this.reveal_timer = lerp(this.reveal_timer, 0, 0.3);
 
                 rect(
                     x + tileSpacing / 2,
