@@ -9,7 +9,7 @@ let readyToGenerate = false;
 
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
-    background(51);
+    background('#0f0f25');
 
     originImage = loadImage(
         "data/demo-1.png",
@@ -24,8 +24,8 @@ function createField() {
         originImage,
         N = 3,
         symmetry = true,
-        w = 32 * 2 + 7,
-        h = 18 * 2
+        w = floor(width / 12),
+        h = floor(height / 12)
     ).then(
         (field) => {
             WFC = field;
@@ -43,7 +43,6 @@ function createField() {
 function draw() {
     // console.log("boop");
     if (readyToGenerate) {
-        background('#0f0f25');
 
         for (let row of WFC.grid) {
             for (let elt of row) {
@@ -54,6 +53,7 @@ function draw() {
         if (frameCount % 30 == 0)
             WFC.updateStep();
     }
+    // noLoop();
 }
 
 function keyPressed() {

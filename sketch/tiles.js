@@ -5,6 +5,7 @@
 class Tile {
     constructor(states, total_states, x, y) {
         this.states = states;
+        this.pLen = this.states.length;
         this.total_states = total_states;
         this.pos = createVector(x || 0, y || 0);
     }
@@ -43,39 +44,49 @@ class Tile {
         let h = tileHeight;
 
         if (this.hasCollapsed()) {
-            fill(this.color);
-            noStroke();
+            if (this.reveal_timer > 0.02) {
+                fill('#0f0f25');
+                noStroke();
+                rect(x, y, w, h);
+                fill(this.color);
+                noStroke();
 
-            if (this.reveal_timer > 0) {
-                if (this.reveal_direction == 0) {
-                    w = w * (1 - this.reveal_timer / this.reveal_timer_max);
-                    x += (tileWidth - w) / 2;
+                if (this.reveal_timer > 0) {
+                    if (this.reveal_direction == 0) {
+                        w = w * (1 - this.reveal_timer / this.reveal_timer_max);
+                        x += (tileWidth - w) / 2;
+                    }
+                    if (this.reveal_direction == 1) {
+                        h = h * (1 - this.reveal_timer / this.reveal_timer_max);
+                        y += (tileHeight - h) / 2;
+                    }
+                    if (this.reveal_direction == 2) {
+                        w = w * (1 - this.reveal_timer / this.reveal_timer_max);
+                        x += (tileWidth - w) / 2;
+                        h = h * (1 - this.reveal_timer / this.reveal_timer_max);
+                        y += (tileHeight - h) / 2;
+                    }
                 }
-                if (this.reveal_direction == 1) {
-                    h = h * (1 - this.reveal_timer / this.reveal_timer_max);
-                    y += (tileHeight - h) / 2;
-                }
-                if (this.reveal_direction == 2) {
-                    w = w * (1 - this.reveal_timer / this.reveal_timer_max);
-                    x += (tileWidth - w) / 2;
-                    h = h * (1 - this.reveal_timer / this.reveal_timer_max);
-                    y += (tileHeight - h) / 2;
-                }
+
+                this.reveal_timer = lerp(this.reveal_timer, 0, 0.08);
+
+                rect(
+                    x + tileSpacing / 2,
+                    y + tileSpacing / 2,
+                    w - tileSpacing,
+                    h - tileSpacing,
+                    tileBorderRadius
+                );
             }
 
-            this.reveal_timer = lerp(this.reveal_timer, 0, 0.08);
-
-            rect(
-                x + tileSpacing / 2,
-                y + tileSpacing / 2,
-                w - tileSpacing,
-                h - tileSpacing,
-                tileBorderRadius
-            );
-
         } else {
-            if (this.states.length < 11) {
+            if (this.states.length < 11 && this.states.length != this.pLen) {
                 const sLen = this.states.length;
+                this.pLen = sLen;
+
+                fill('#0f0f25');
+                noStroke();
+                rect(x, y, w, h);
 
                 colorMode(HSB, 255, 255, 255);
                 fill(sLen * 12 + 50, 128, 255, 1 - sLen / 10);

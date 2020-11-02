@@ -80,6 +80,7 @@ class Field {
         const j = floor(random(0.25, 0.75) * this.W);
         this.grid[i][j].collapse();
         this.grid[i][j].color = color(...JSON.parse(this.patterns[this.grid[i][j].states[0]]));
+        // this.grid[i][j].slowReveal(2);
         this.affected = this.getNeighborIndicies(i, j);
     }
 
