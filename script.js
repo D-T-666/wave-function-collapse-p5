@@ -6,20 +6,13 @@ let originImage;
 
 let readyToGenerate = false;
 
-function preload() {
-    originImage = loadImage(
-        "data/demo-4.png",
-        () => console.log("succesfully loaded the image"),
-        () => console.log("couldn't loaded the image")
-    );
-}
 
 function setup() {
-    canvas = createCanvas(displayWidth, displayHeight);
+    canvas = createCanvas(windowWidth, windowHeight);
     background(51);
 
     originImage = loadImage(
-        "data/demo-1.png",
+        "data/demo-3.png",
         () => createField(),
         () => console.log("couldn't loaded the image")
     );
@@ -31,7 +24,7 @@ function createField() {
         originImage,
         N = 3,
         symmetry = true,
-        w = 32 * 2,
+        w = 32 * 2 + 7,
         h = 18 * 2
     ).then(
         (field) => {
@@ -39,6 +32,10 @@ function createField() {
             WFC.seed();
             readyToGenerate = true;
             console.log("heai");
+            tileHeight = height / WFC.H;
+            tileWidth = width / WFC.W;
+            tileSpacing = min(tileHeight, tileWidth) / 8;
+            tileBorderRadius = tileSpacing * 1.3;
         }
     );
 }
@@ -54,16 +51,13 @@ function draw() {
             }
         }
 
-        if (frameCount % 20 == 0)
+        if (frameCount % 30 == 0)
             WFC.updateStep();
-    } else {
-        // fill(255);
-        // text("loading...", 100, 50 + random(height));
     }
 }
 
 function keyPressed() {
     if (keyCode == 122) {
-        // Resize when F11 is pressed
+
     }
 }

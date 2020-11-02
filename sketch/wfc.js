@@ -20,7 +20,7 @@ class Field {
                 for (let k = 0; k < this.patterns.length; k++) {
                     states.push(k);
                 }
-                this.grid[i][j] = new Tile(states, this.patterns.length, j, i, height / this.H);
+                this.grid[i][j] = new Tile(states, this.patterns.length, j, i);
             }
         }
     }
@@ -79,7 +79,7 @@ class Field {
         const i = floor(random(0.25, 0.75) * this.H);
         const j = floor(random(0.25, 0.75) * this.W);
         this.grid[i][j].collapse();
-        this.grid[i][j].color = color(...JSON.parse(this.patterns[this.grid[i][j].states[0]])[0][0]);
+        this.grid[i][j].color = color(...JSON.parse(this.patterns[this.grid[i][j].states[0]]));
         this.affected = this.getNeighborIndicies(i, j);
     }
 
@@ -111,7 +111,7 @@ class Field {
                 this.affected = this.getNeighborIndicies(iMin, jMin);
 
                 // Set the color of the tile to the corresponding patterns (0,0) tile
-                this.grid[iMin][jMin].color = color(...JSON.parse(this.patterns[this.grid[iMin][jMin].states[0]])[0][0]);
+                this.grid[iMin][jMin].color = color(...JSON.parse(this.patterns[this.grid[iMin][jMin].states[0]]));
 
                 // Start the reveal animation
                 this.grid[iMin][jMin].slowReveal();
@@ -163,7 +163,7 @@ class Field {
                                 // Increment the tiles collapsed counter
                                 tiles_collapsed++;
                                 // Set the color of the tile to the coresponding paterns (0,0) tile
-                                this.grid[i][j].color = color(...JSON.parse(this.patterns[nStates[0]])[0][0]);
+                                this.grid[i][j].color = color(...JSON.parse(this.patterns[nStates[0]]));
                                 // Start the animation in the specified direction
                                 this.grid[i][j].slowReveal(collapse_dir);
                             }
@@ -188,7 +188,7 @@ class Field {
     }
 }
 
-async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16, callBack) {
+async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
     // Load the pixels of the p5.Image specified
     img.loadPixels();
 
@@ -283,9 +283,15 @@ async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16, call
         }
     }
 
+
+    let colors = [];
+    for (let patt of patterns) {
+        colors.push(JSON.stringify(JSON.parse(patt)[0][0]));
+    }
+
     // callBack(new Field(patterns, matcher, w, h));
 
     // Return a Field object initialized with the patterns list,
     // matcher and the specified width and height
-    return new Field(patterns, matcher, w, h);
+    return new Field(colors, matcher, w, h);
 }

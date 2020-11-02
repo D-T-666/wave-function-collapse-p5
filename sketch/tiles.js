@@ -3,11 +3,10 @@
 */
 
 class Tile {
-    constructor(states, total_states, x, y, size) {
+    constructor(states, total_states, x, y) {
         this.states = states;
         this.total_states = total_states;
         this.pos = createVector(x || 0, y || 0);
-        this.size = size;
     }
 
     collapse() {
@@ -30,18 +29,18 @@ class Tile {
     slowReveal(dir = 0) {
         // initiallizes some varialbes for animation
         this.reveal_direction = dir;
-        this.reveal_timer_max = 20;
+        this.reveal_timer_max = 10;
         this.reveal_timer = this.reveal_timer_max;
     }
 
     display() {
         // set x coordinate to be the x index of the tile * the size of the tile 
-        let x = (this.pos.x * this.size);
+        let x = (this.pos.x * tileWidth);
         // set y coordinate to be the y index of the tile * the size of the tile 
-        let y = (this.pos.y * this.size);
+        let y = (this.pos.y * tileHeight);
         // Set w, h to size
-        let w = (this.size);
-        let h = (this.size);
+        let w = tileWidth;
+        let h = tileHeight;
 
         if (this.hasCollapsed()) {
             fill(this.color);
@@ -50,32 +49,28 @@ class Tile {
             if (this.reveal_timer > 0) {
                 if (this.reveal_direction == 0) {
                     w = w * (1 - this.reveal_timer / this.reveal_timer_max);
-                    x += (this.size - w) / 2;
+                    x += (tileWidth - w) / 2;
                 }
                 if (this.reveal_direction == 1) {
                     h = h * (1 - this.reveal_timer / this.reveal_timer_max);
-                    y += (this.size - h) / 2;
+                    y += (tileHeight - h) / 2;
                 }
                 if (this.reveal_direction == 2) {
                     w = w * (1 - this.reveal_timer / this.reveal_timer_max);
-                    x += (this.size - w) / 2;
+                    x += (tileWidth - w) / 2;
                     h = h * (1 - this.reveal_timer / this.reveal_timer_max);
-                    y += (this.size - h) / 2;
+                    y += (tileHeight - h) / 2;
                 }
             }
 
             this.reveal_timer = lerp(this.reveal_timer, 0, 0.08);
 
-            let spacing = this.size / 8;
-            // let corner = ceil(spacing * 0.7);
-            let corner = spacing * 1.3;
-
             rect(
-                x + spacing / 2,
-                y + spacing / 2,
-                w - spacing,
-                h - spacing,
-                corner
+                x + tileSpacing / 2,
+                y + tileSpacing / 2,
+                w - tileSpacing,
+                h - tileSpacing,
+                tileBorderRadius
             );
 
         } else {
@@ -85,7 +80,7 @@ class Tile {
                 colorMode(HSB, 255, 255, 255);
                 fill(sLen * 12 + 50, 128, 255, 1 - sLen / 10);
                 textAlign(CENTER, CENTER);
-                textSize(this.size / 2);
+                textSize(min(tileHeight, tileWidth) / 2);
                 text(sLen, x + w / 2, y + h / 2);
                 colorMode(RGB);
 
