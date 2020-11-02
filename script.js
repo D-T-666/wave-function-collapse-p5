@@ -24,8 +24,8 @@ function createField() {
         originImage,
         N = 3,
         symmetry = true,
-        w = floor(width / 12),
-        h = floor(height / 12)
+        w = floor(width / 16),
+        h = floor(height / 16)
         
     ).then(
         (field) => {
