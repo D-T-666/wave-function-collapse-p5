@@ -10,106 +10,6 @@ class Field {
         this.clearGrid();
     }
 
-    static createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
-        // Load the pixels of the p5.Image specified
-        img.loadPixels();
-
-        // Store the width and height of the image in 
-        // variables with sammler names
-        const iW = img.width;
-        const iH = img.height;
-
-        // Since p5.Image doesn't store images with the shape (width, height rgba)
-        // but rather (width*height*4) we need to reshape the image manually.
-        let rgba_map = [];
-
-        // Loop over the height of the image.
-        for (let i = 0; i < iH; i++) {
-            // Add a row of [rgba]s 
-            rgba_map[i] = [];
-            // Loop over the width of the image.
-            for (let j = 0; j < iW; j++) {
-                // Add a [rgba] ellement.
-                rgba_map[i][j] = [];
-                // Populate the ellement with values.
-                for (let k = 0; k < 4; k++) {
-                    rgba_map[i][j].push(img.pixels[(i * iW + j) * 4 + k]);
-                }
-            }
-        }
-
-        // initialize the list that will hold the patterns.
-        let patterns = [];
-
-        // Loop over the width and height of the image to extract patterns.
-        for (let i = 0; i < iH; i++) {
-            for (let j = 0; j < iW; j++) {
-                // initialize a 2d pattern
-                let pattern = [];
-
-                // loop over a NxN box with the offset i,j in the image 
-                // to extract a single pattern
-                for (let u = 0; u < n; u++) {
-                    pattern[u] = [];
-                    for (let v = 0; v < n; v++) {
-                        pattern[u][v] = rgba_map[(i + u) % iH][(j + v) % iW];
-                    }
-                }
-
-                // Now that we have our pattern extracted wecheck if the symmetry is enabled.
-                if (symmetry) {
-                    // If symmetry is enabled, we need to do all the rotations and reflections.
-                    // Loop over all directions.
-                    for (let rotation = 0; rotation < 4; rotation++) {
-                        // Tanspose the pattern
-                        pattern = transpose2DArray(pattern);
-                        // Check if this instance of the pattern is in the
-                        // patterns list. If not, add it to the list
-                        if (!patterns.includes(JSON.stringify(pattern))) {
-                            patterns.push(JSON.stringify(pattern));
-                        }
-                        // Flip the pattern
-                        pattern = flip1DArray(pattern);
-                        // Check if this instance of the pattern is in the
-                        // patterns list. If not, add it to the list
-                        if (!patterns.includes(JSON.stringify(pattern))) {
-                            patterns.push(JSON.stringify(pattern));
-                        }
-
-                        // If you think about it Transpose+Flip = Rot90°
-                    }
-                } else {
-                    // If we're not doing any symmetry, We can just
-                    // check if this instance of the pattern is in the
-                    // patterns list. If not, add it to the list
-                    if (!patterns.includes(JSON.stringify(pattern))) {
-                        patterns.push(JSON.stringify(pattern));
-                    }
-                }
-            }
-        }
-
-        // Initialize the matcher object
-        let matcher = new Matcher();
-
-        // Check every pattern for every other pattern
-        for (let patA of patterns) {
-            for (let patB of patterns) {
-                // Check for compatibility in every direction
-                for (let direction = 0; direction < 4; direction++) {
-                    // If compatible, add it to the matcher as a posibility
-                    if (Matcher.tileCompatible(JSON.parse(patA), JSON.parse(patB), direction)) {
-                        matcher.addPattern(patterns.indexOf(patA), patterns.indexOf(patB), direction);
-                    }
-                }
-            }
-        }
-
-        // Return a Field object initialized with the patterns list,
-        // matcher and the specified width and height
-        return new Field(patterns, matcher, w, h);
-    }
-
     clearGrid() {
         // Initializes the grid. Also clears the grid if already populated 
         this.grid = [];
@@ -120,7 +20,7 @@ class Field {
                 for (let k = 0; k < this.patterns.length; k++) {
                     states.push(k);
                 }
-                this.grid[i][j] = new Tile(states, this.patterns.length, j, i, height / this.H);
+                this.grid[i][j] = new Tile(states, this.patterns.length, j, i);
             }
         }
     }
@@ -175,6 +75,15 @@ class Field {
         ];
     }
 
+    seed() {
+        const i = floor(random(0.25, 0.75) * this.H);
+        const j = floor(random(0.25, 0.75) * this.W);
+        this.grid[i][j].collapse();
+        this.grid[i][j].color = color(...JSON.parse(this.patterns[this.grid[i][j].states[0]]));
+        // this.grid[i][j].slowReveal(2);
+        this.affected = this.getNeighborIndicies(i, j);
+    }
+
     isDone() {
         let sum = 0;
 
@@ -203,7 +112,7 @@ class Field {
                 this.affected = this.getNeighborIndicies(iMin, jMin);
 
                 // Set the color of the tile to the corresponding patterns (0,0) tile
-                this.grid[iMin][jMin].color = color(...JSON.parse(this.patterns[this.grid[iMin][jMin].states[0]])[0][0]);
+                this.grid[iMin][jMin].color = color(...JSON.parse(this.patterns[this.grid[iMin][jMin].states[0]]));
 
                 // Start the reveal animation
                 this.grid[iMin][jMin].slowReveal();
@@ -255,7 +164,7 @@ class Field {
                                 // Increment the tiles collapsed counter
                                 tiles_collapsed++;
                                 // Set the color of the tile to the coresponding paterns (0,0) tile
-                                this.grid[i][j].color = color(...JSON.parse(this.patterns[nStates[0]])[0][0]);
+                                this.grid[i][j].color = color(...JSON.parse(this.patterns[nStates[0]]));
                                 // Start the animation in the specified direction
                                 this.grid[i][j].slowReveal(collapse_dir);
                             }
@@ -280,3 +189,110 @@ class Field {
     }
 }
 
+async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
+    // Load the pixels of the p5.Image specified
+    img.loadPixels();
+
+    // Store the width and height of the image in 
+    // variables with sammler names
+    const iW = img.width;
+    const iH = img.height;
+
+    // Since p5.Image doesn't store images with the shape (width, height rgba)
+    // but rather (width*height*4) we need to reshape the image manually.
+    let rgba_map = [];
+
+    // Loop over the height of the image.
+    for (let i = 0; i < iH; i++) {
+        // Add a row of [rgba]s 
+        rgba_map[i] = [];
+        // Loop over the width of the image.
+        for (let j = 0; j < iW; j++) {
+            // Add a [rgba] ellement.
+            rgba_map[i][j] = [];
+            // Populate the ellement with values.
+            for (let k = 0; k < 4; k++) {
+                rgba_map[i][j].push(img.pixels[(i * iW + j) * 4 + k]);
+            }
+        }
+    }
+
+    // initialize the list that will hold the patterns.
+    let patterns = [];
+
+    // Loop over the width and height of the image to extract patterns.
+    for (let i = 0; i < iH; i++) {
+        for (let j = 0; j < iW; j++) {
+            // initialize a 2d pattern
+            let pattern = [];
+
+            // loop over a NxN box with the offset i,j in the image 
+            // to extract a single pattern
+            for (let u = 0; u < n; u++) {
+                pattern[u] = [];
+                for (let v = 0; v < n; v++) {
+                    pattern[u][v] = rgba_map[(i + u) % iH][(j + v) % iW];
+                }
+            }
+
+            // Now that we have our pattern extracted wecheck if the symmetry is enabled.
+            if (symmetry) {
+                // If symmetry is enabled, we need to do all the rotations and reflections.
+                // Loop over all directions.
+                for (let rotation = 0; rotation < 4; rotation++) {
+                    // Tanspose the pattern
+                    pattern = transpose2DArray(pattern);
+                    // Check if this instance of the pattern is in the
+                    // patterns list. If not, add it to the list
+                    if (!patterns.includes(JSON.stringify(pattern))) {
+                        patterns.push(JSON.stringify(pattern));
+                    }
+                    // Flip the pattern
+                    pattern = flip1DArray(pattern);
+                    // Check if this instance of the pattern is in the
+                    // patterns list. If not, add it to the list
+                    if (!patterns.includes(JSON.stringify(pattern))) {
+                        patterns.push(JSON.stringify(pattern));
+                    }
+
+                    // If you think about it Transpose+Flip = Rot90°
+                }
+            } else {
+                // If we're not doing any symmetry, We can just
+                // check if this instance of the pattern is in the
+                // patterns list. If not, add it to the list
+                if (!patterns.includes(JSON.stringify(pattern))) {
+                    patterns.push(JSON.stringify(pattern));
+                }
+            }
+        }
+    }
+
+    // Initialize the matcher object
+    let matcher = new Matcher();
+
+    // Check every pattern for every other pattern
+    for (let patA of patterns) {
+        for (let patB of patterns) {
+            // Check for compatibility in every direction
+            for (let direction = 0; direction < 4; direction++) {
+                // If compatible, add it to the matcher as a posibility
+                if (Matcher.tileCompatible(JSON.parse(patA), JSON.parse(patB), direction)) {
+                    matcher.addPattern(patterns.indexOf(patA), patterns.indexOf(patB), direction);
+                }
+            }
+        }
+    }
+
+
+    let colors = [];
+    for (let patt of patterns) {
+        colors.push(JSON.stringify(JSON.parse(patt)[0][0]));
+    }
+
+    // callBack(new Field(patterns, matcher, w, h));
+
+    // Return a Field object initialized with the patterns list,
+    // matcher and the specified width and height
+    return new Field(colors, matcher, w, h);
+}

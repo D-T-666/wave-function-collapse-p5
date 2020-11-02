@@ -4,42 +4,60 @@ let WFC;
 
 let originImage;
 
-function preload() {
-    originImage = loadImage(
-        "data/demo-3.png",
-        () => console.log("succesfully loaded the image"),
-        () => console.log("couldn't loaded the image")
-    );
-}
+let readyToGenerate = false;
+
 
 function setup() {
-    canvas = createCanvas(displayWidth, displayHeight);
+    canvas = createCanvas(windowWidth, windowHeight);
+    background('#0f0f25');
 
-    WFC = Field.createFromImage(
+    originImage = loadImage(
+        "data/demo-1.png",
+        () => createField(),
+        () => console.log("couldn't loaded the image")
+    );
+
+}
+
+function createField() {
+    createFromImage(
         originImage,
         N = 3,
         symmetry = true,
-        w = 32,
-        h = 18
+        w = floor(width / 12),
+        h = floor(height / 12)
+    ).then(
+        (field) => {
+            WFC = field;
+            WFC.seed();
+            readyToGenerate = true;
+            console.log("heai");
+            tileHeight = height / WFC.H;
+            tileWidth = width / WFC.W;
+            tileSpacing = min(tileHeight, tileWidth) / 8;
+            tileBorderRadius = tileSpacing * 1.3;
+        }
     );
 }
 
 function draw() {
-    background('#0f0f25');
+    // console.log("boop");
+    if (readyToGenerate) {
 
-    for (let row of WFC.grid) {
-        for (let elt of row) {
-            elt.display();
+        for (let row of WFC.grid) {
+            for (let elt of row) {
+                elt.display();
+            }
         }
+
+        if (frameCount % 30 == 0)
+            WFC.updateStep();
     }
-
-    if (frameCount % 30 == 0)
-        WFC.updateStep();
-
+    // noLoop();
 }
 
 function keyPressed() {
     if (keyCode == 122) {
-        // Resize when F11 is pressed
+
     }
 }
