@@ -80,27 +80,42 @@ class Tile {
             }
 
         } else {
-            if (this.states.length < 11 && this.states.length != this.pLen) {
+            if (this.states.length < 26 && this.states.length != this.pLen) {
                 const sLen = this.states.length;
                 this.pLen = sLen;
 
-                fill('#0f0f25');
                 noStroke();
+                fill('#0f0f25');
                 rect(x, y, w, h);
 
-                colorMode(HSB, 255, 255, 255);
-                fill(sLen * 12 + 50, 128, 255, 1 - sLen / 10);
-                textAlign(CENTER, CENTER);
-                textSize(min(tileHeight, tileWidth) / 2);
-                text(sLen, x + w / 2, y + h / 2);
-                colorMode(RGB);
+                // colorMode(HSB, 255, 255, 255);
+                // fill(sLen * 12 + 50, 128, 255, 1 - sLen / 10);
+
+                fill(this.color);
+                // textAlign(CENTER, CENTER);
+                // textSize(min(tileHeight, tileWidth) / 2);
+                // text(sLen, x + w / 2, y + h / 2);
+
+                // colorMode(RGB);
 
 
                 // let br = (1 - this.states.length / this.total_states) * 0.8 + 0.2;
                 // fill(255, br * 127);
-                // noStroke();
-                // ellipse(x + w / 2, y + h / 2, w * .4, h * .4);
+                noStroke();
+                ellipse(x + w / 2, y + h / 2, w * (1 / this.states.length), h * (1 / this.states.length));
             }
+
+            // if (this.color) {
+            //     fill(this.color);
+            //     noStroke();
+            //     rect(
+            //         x + tileSpacing / 2,
+            //         y + tileSpacing / 2,
+            //         w - tileSpacing,
+            //         h - tileSpacing,
+            //         tileBorderRadius
+            //     );
+            // }
         }
 
     }
