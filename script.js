@@ -26,7 +26,7 @@ function createField() {
         symmetry = true,
         w = floor(width / 16),
         h = floor(height / 16)
-        
+
     ).then(
         (field) => {
             WFC = field;

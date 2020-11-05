@@ -35,13 +35,8 @@ class Matcher {
                 neighbor_posibilities.push(...this.patterns[state][(direction + 2) % 4]);
             }
 
-            let update_states = [];
             // Get the intersection of the previous states and the possibilities.
-            for (let state of nStates) {
-                if (neighbor_posibilities.indexOf(state) != -1) {
-                    update_states.push(state);
-                }
-            }
+            let update_states = nStates.filter((a) => neighbor_posibilities.includes(a));
 
             if (update_states.length == 1 && collapse_dir == 2) {
                 collapse_dir = direction % 2;

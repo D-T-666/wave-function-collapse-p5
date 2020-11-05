@@ -79,7 +79,7 @@ class Field {
         const i = floor(random(0.25, 0.75) * this.H);
         const j = floor(random(0.25, 0.75) * this.W);
         this.grid[i][j].collapse();
-        this.grid[i][j].color = color(...JSON.parse(this.patterns[this.grid[i][j].states[0]]));
+        this.grid[i][j].color = this.patterns[this.grid[i][j].states[0]];
         this.grid[i][j].slowReveal(2);
         this.affected = this.getNeighborIndicies(i, j);
     }
@@ -112,10 +112,62 @@ class Field {
                 this.affected = this.getNeighborIndicies(iMin, jMin);
 
                 // Set the color of the tile to the corresponding patterns (0,0) tile
-                this.grid[iMin][jMin].color = color(...JSON.parse(this.patterns[this.grid[iMin][jMin].states[0]]));
+                this.grid[iMin][jMin].color = this.patterns[this.grid[iMin][jMin].states[0]];
 
                 // Start the reveal animation
                 this.grid[iMin][jMin].slowReveal();
+
+                for (let i = 0; i < this.H; i++) {
+                    for (let j = 0; j < this.W; j++) {
+                        if (!this.grid[i][j].hasCollapsed()) {
+                            // Get the neighbor indicies
+                            let neighborIndicies = this.getNeighborIndicies(i, j);
+
+                            // Get the neighbor states
+                            let neighbors = [];
+                            // Loop over every neighbor location
+                            for (let neighbor of neighborIndicies) {
+                                // Get the location
+                                let [iN, jN] = neighbor;
+
+                                // Add the coresponding tiles states to the neighbor states array
+                                neighbors.push(this.grid[iN][jN].states);
+                            }
+
+                            // Get previous states 
+                            let pStates = this.grid[i][j].states;
+
+                            // Get new states and the direction of the possible collapse
+                            let [nStates, collapse_dir] = this.matcher.match(pStates, neighbors);
+
+                            // If the size of the previous and new states are different,
+                            // and the length of new states is greater than 0
+                            if (pStates.length != nStates.length && nStates.length > 0) {
+                                // Update tiles states to be the new states
+                                this.grid[i][j].states = nStates;
+
+                                // If the length of new states is 1, it means that
+                                // the tile has collapsed
+                                if (nStates.length == 1) {
+                                    // Set the color of the tile to the coresponding paterns (0,0) tile
+                                    this.grid[i][j].color = this.patterns[nStates[0]];
+                                    // Start the animation in the specified direction
+                                    this.grid[i][j].slowReveal(collapse_dir);
+                                }
+
+                                // For every neighbor indicies
+                                for (let neighbor of neighborIndicies) {
+                                    // If those indicies are not already in the 
+                                    // affected array or in the new affected array, 
+                                    // add it to the new affected array 
+                                    if (!this.affected.includes(neighbor)) {
+                                        this.affected.push(neighbor);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // While there are tiles to be updated and no tiles have collapsed 
@@ -159,7 +211,7 @@ class Field {
                             // the tile has collapsed
                             if (nStates.length == 1) {
                                 // Set the color of the tile to the coresponding paterns (0,0) tile
-                                this.grid[i][j].color = color(...JSON.parse(this.patterns[nStates[0]]));
+                                this.grid[i][j].color = this.patterns[nStates[0]];
                                 // Start the animation in the specified direction
                                 this.grid[i][j].slowReveal(collapse_dir);
                             }
@@ -181,6 +233,8 @@ class Field {
                 this.affected = nAffected;
             }
         }
+
+
     }
 }
 
@@ -239,15 +293,17 @@ async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
                     pattern = transpose2DArray(pattern);
                     // Check if this instance of the pattern is in the
                     // patterns list. If not, add it to the list
-                    if (!patterns.includes(JSON.stringify(pattern))) {
-                        patterns.push(JSON.stringify(pattern));
+                    let stringified = JSON.stringify(pattern);
+                    if (!patterns.includes(stringified)) {
+                        patterns.push(stringified);
                     }
                     // Flip the pattern
                     pattern = flip1DArray(pattern);
                     // Check if this instance of the pattern is in the
                     // patterns list. If not, add it to the list
-                    if (!patterns.includes(JSON.stringify(pattern))) {
-                        patterns.push(JSON.stringify(pattern));
+                    stringified = JSON.stringify(pattern);
+                    if (!patterns.includes(stringified)) {
+                        patterns.push(stringified);
                     }
 
                     // If you think about it Transpose+Flip = Rot90°
@@ -256,8 +312,9 @@ async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
                 // If we're not doing any symmetry, We can just
                 // check if this instance of the pattern is in the
                 // patterns list. If not, add it to the list
-                if (!patterns.includes(JSON.stringify(pattern))) {
-                    patterns.push(JSON.stringify(pattern));
+                let stringified = JSON.stringify(pattern);
+                if (!patterns.includes(stringified)) {
+                    patterns.push(stringified);
                 }
             }
         }
@@ -267,22 +324,23 @@ async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
     let matcher = new Matcher();
 
     // Check every pattern for every other pattern
-    for (let patA of patterns) {
-        for (let patB of patterns) {
+    for (let i = 0; i < patterns.length; i++) {
+        for (let j = 0; j < patterns.length; j++) {
             // Check for compatibility in every direction
             for (let direction = 0; direction < 4; direction++) {
                 // If compatible, add it to the matcher as a posibility
-                if (Matcher.tileCompatible(JSON.parse(patA), JSON.parse(patB), direction)) {
-                    matcher.addPattern(patterns.indexOf(patA), patterns.indexOf(patB), direction);
+                if (Matcher.tileCompatible(JSON.parse(patterns[i]), JSON.parse(patterns[j]), direction)) {
+                    matcher.addPattern(i, j, direction);
                 }
             }
         }
     }
+    console.log(matcher)
 
 
     let colors = [];
     for (let patt of patterns) {
-        colors.push(JSON.stringify(JSON.parse(patt)[0][0]));
+        colors.push(color(...JSON.parse(patt)[0][0]));
     }
 
     // callBack(new Field(patterns, matcher, w, h));
