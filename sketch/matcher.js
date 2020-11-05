@@ -31,9 +31,13 @@ class Matcher {
         for (let direction = 0; direction < 4; direction++) {
             let neighbor_posibilities = [];
             // Get all the possible neighbors for each neighbor in the oposite direction.
-            for (let state of neighbor_states[direction]) {
+            // for (let state of neighbor_states[direction]) {
+            //     neighbor_posibilities.push(...this.patterns[state][(direction + 2) % 4]);
+            // }
+
+            neighbor_states[direction].forEach(state => {
                 neighbor_posibilities.push(...this.patterns[state][(direction + 2) % 4]);
-            }
+            });
 
             // Get the intersection of the previous states and the possibilities.
             let update_states = nStates.filter((a) => neighbor_posibilities.includes(a));

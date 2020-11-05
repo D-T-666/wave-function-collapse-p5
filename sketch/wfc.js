@@ -116,58 +116,6 @@ class Field {
 
                 // Start the reveal animation
                 this.grid[iMin][jMin].slowReveal();
-
-                for (let i = 0; i < this.H; i++) {
-                    for (let j = 0; j < this.W; j++) {
-                        if (!this.grid[i][j].hasCollapsed()) {
-                            // Get the neighbor indicies
-                            let neighborIndicies = this.getNeighborIndicies(i, j);
-
-                            // Get the neighbor states
-                            let neighbors = [];
-                            // Loop over every neighbor location
-                            for (let neighbor of neighborIndicies) {
-                                // Get the location
-                                let [iN, jN] = neighbor;
-
-                                // Add the coresponding tiles states to the neighbor states array
-                                neighbors.push(this.grid[iN][jN].states);
-                            }
-
-                            // Get previous states 
-                            let pStates = this.grid[i][j].states;
-
-                            // Get new states and the direction of the possible collapse
-                            let [nStates, collapse_dir] = this.matcher.match(pStates, neighbors);
-
-                            // If the size of the previous and new states are different,
-                            // and the length of new states is greater than 0
-                            if (pStates.length != nStates.length && nStates.length > 0) {
-                                // Update tiles states to be the new states
-                                this.grid[i][j].states = nStates;
-
-                                // If the length of new states is 1, it means that
-                                // the tile has collapsed
-                                if (nStates.length == 1) {
-                                    // Set the color of the tile to the coresponding paterns (0,0) tile
-                                    this.grid[i][j].color = this.patterns[nStates[0]];
-                                    // Start the animation in the specified direction
-                                    this.grid[i][j].slowReveal(collapse_dir);
-                                }
-
-                                // For every neighbor indicies
-                                for (let neighbor of neighborIndicies) {
-                                    // If those indicies are not already in the 
-                                    // affected array or in the new affected array, 
-                                    // add it to the new affected array 
-                                    if (!this.affected.includes(neighbor)) {
-                                        this.affected.push(neighbor);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
 
             // While there are tiles to be updated and no tiles have collapsed 
@@ -214,6 +162,20 @@ class Field {
                                 this.grid[i][j].color = this.patterns[nStates[0]];
                                 // Start the animation in the specified direction
                                 this.grid[i][j].slowReveal(collapse_dir);
+                            } else {
+                                let r = 0;
+                                let g = 0;
+                                let b = 0;
+                                for (let k = 0; k < nStates.length; k++) {
+                                    r = red(this.patterns[nStates[k]])
+                                    g = green(this.patterns[nStates[k]])
+                                    b = blue(this.patterns[nStates[k]])
+                                }
+                                this.grid[i][j].color = color(
+                                    r / nStates.length,
+                                    g / nStates.length,
+                                    b / nStates.length
+                                );
                             }
 
                             // For every neighbor indicies
@@ -238,7 +200,7 @@ class Field {
     }
 }
 
-async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
+async function createFromImage(img, n = 2, symmetry = false, w = 16, h = 16) {
     // Load the pixels of the p5.Image specified
     img.loadPixels();
 
@@ -265,13 +227,15 @@ async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
             }
         }
     }
+    rgba_map = transpose2DArray(flip1DArray(rgba_map));
+
 
     // initialize the list that will hold the patterns.
     let patterns = [];
 
     // Loop over the width and height of the image to extract patterns.
-    for (let i = 0; i < iH; i++) {
-        for (let j = 0; j < iW; j++) {
+    for (let i = 0; i < iW; i++) {
+        for (let j = 0; j < iH; j++) {
             // initialize a 2d pattern
             let pattern = [];
 
@@ -280,7 +244,7 @@ async function createFromImage(img, n = 2, symmetry = true, w = 16, h = 16) {
             for (let u = 0; u < n; u++) {
                 pattern[u] = [];
                 for (let v = 0; v < n; v++) {
-                    pattern[u][v] = rgba_map[(i + u) % iH][(j + v) % iW];
+                    pattern[u][v] = rgba_map[(i + u) % iW][(j + v) % iH];
                 }
             }
 
