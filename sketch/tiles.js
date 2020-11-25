@@ -8,7 +8,7 @@ class Tile {
         this.pLen = this.states.length;
         this.total_states = total_states;
         this.pos = createVector(x || 0, y || 0);
-        this.hilight = false;
+        this.highlight = false;
     }
 
     collapse() {
@@ -80,11 +80,11 @@ class Tile {
                 );
             }
 
-        } else if (this.hilight) {
+        } else if (this.highlight) {
             noStroke();
             fill('#0f0f25');
             rect(x, y, w, h);
-            this.hilight = false;
+            this.highlight = false;
         } else {
             if (this.states.length < 26 && this.states.length != this.pLen) {
                 const sLen = this.states.length;
@@ -126,7 +126,7 @@ class Tile {
 
     }
 
-    Hilight() {
+    Highlight() {
         // set x coordinate to be the x index of the tile * the size of the tile 
         let x = (this.pos.x * tileWidth);
         // set y coordinate to be the y index of the tile * the size of the tile 
@@ -143,6 +143,6 @@ class Tile {
             h - tileSpacing,
             tileBorderRadius
         );
-        this.hilight = true;
+        this.highlight = true;
     }
 }
