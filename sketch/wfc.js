@@ -219,21 +219,19 @@ class Field {
                 this.grid[iMin][jMin].slowReveal();
             }
 
-            // While there are tiles to be updated and no tiles have collapsed 
-            // while (this.affected.length > 0) {
-            // Initialize the new affected array
-            // let nAffected = [];
+            // For every affected tile
+            // let affected = this.affected.splice(0, 1)[0];
+            // while (this.grid[affected[0]][affected[1]].hasCollapsed())
+            //     affected = this.affected.splice(0, 1)[0];
+
 
             // For every affected tile
-            // for (let affected of this.affected) {
-            let affected = this.affected.splice(0, 1)[0];
+            let affected = this.affected.pop();
             while (this.grid[affected[0]][affected[1]].hasCollapsed())
-                affected = this.affected.splice(0, 1)[0];
+                affected = this.affected.pop();
 
             // Get the location
             let [i, j] = affected;
-
-            // console.log(i, j, this.grid[i][j].states);
 
             // Get the neighbor indicies
             let neighborIndicies = this.getNeighborIndicies(i, j);
