@@ -134,7 +134,7 @@ class Tile {
         // Set w, h to size
         let w = tileWidth;
         let h = tileHeight;
-        fill(255, 0, 0);
+        fill(127);
         noStroke();
         rect(
             x + tileSpacing / 2,

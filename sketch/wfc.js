@@ -219,82 +219,89 @@ class Field {
                 this.grid[iMin][jMin].slowReveal();
             }
 
-            // For every affected tile
-            // let affected = this.affected.splice(0, 1)[0];
-            // while (this.grid[affected[0]][affected[1]].hasCollapsed())
-            //     affected = this.affected.splice(0, 1)[0];
+            while (this.affected.length > 0) {
 
+                // For every affected tile
+                // let current = this.affected.splice(0, 1)[0];
+                // while (this.grid[current[0]][current[1]].hasCollapsed()) {
+                //     current = this.affected.splice(0, 1)[0];
+                //     if (current == undefined)
+                //         return;
+                // }
 
-            // For every affected tile
-            let affected = this.affected.pop();
-            while (this.grid[affected[0]][affected[1]].hasCollapsed())
-                affected = this.affected.pop();
+                // For every affected tile
+                let current = this.affected.pop();
+                while (this.grid[current[0]][current[1]].hasCollapsed()) {
+                    current = this.affected.pop();
+                    if (current == undefined)
+                        return;
+                }
 
-            // Get the location
-            let [i, j] = affected;
-
-            // Get the neighbor indicies
-            let neighborIndicies = this.getNeighborIndicies(i, j);
-
-            // Get the neighbor states
-            let neighbors = [];
-            // Loop over every neighbor location
-            for (let neighbor of neighborIndicies) {
                 // Get the location
-                let [iN, jN] = neighbor;
+                let [i, j] = current;
 
-                // Add the coresponding tiles states to the neighbor states array
-                neighbors.push(this.grid[iN][jN].states);
-            }
+                // Get the neighbor indicies
+                let neighborIndicies = this.getNeighborIndicies(i, j);
 
-            // Get previous states 
-            let pStates = this.grid[i][j].states;
-
-            // Get new states and the direction of the possible collapse
-            let [nStates, collapse_dir] = this.matcher.match(pStates, neighbors);
-
-            // If the size of the previous and new states are different,
-            // and the length of new states is greater than 0
-            if (pStates.length != nStates.length && nStates.length > 0) {
-                // Update tiles states to be the new states
-                this.grid[i][j].states = nStates;
-
-                this.grid[i][j].Hilight();
-
-                // If the length of new states is 1, it means that
-                // the tile has collapsed
-                if (nStates.length == 1) {
-                    // Set the color of the tile to the coresponding paterns (0,0) tile
-                    this.grid[i][j].color = this.patterns[nStates[0]];
-                    // Start the animation in the specified direction
-                    this.grid[i][j].slowReveal(collapse_dir);
-                } else {
-                    let r = 0;
-                    let g = 0;
-                    let b = 0;
-                    for (let k = 0; k < nStates.length; k++) {
-                        r = red(this.patterns[nStates[k]])
-                        g = green(this.patterns[nStates[k]])
-                        b = blue(this.patterns[nStates[k]])
-                    }
-                    this.grid[i][j].color = color(
-                        r / nStates.length,
-                        g / nStates.length,
-                        b / nStates.length
-                    );
-                }
-
-                // For every neighbor indicies
+                // Get the neighbor states
+                let neighbors = [];
+                // Loop over every neighbor location
                 for (let neighbor of neighborIndicies) {
-                    // If those indicies are not already in the 
-                    // affected array or in the new affected array, 
-                    // add it to the new affected array 
-                    if (!this.affected.includes(neighbor)) {
-                        this.affected.push(neighbor);
+                    // Get the location
+                    let [iN, jN] = neighbor;
+
+                    // Add the coresponding tiles states to the neighbor states array
+                    neighbors.push(this.grid[iN][jN].states);
+                }
+
+                // Get previous states 
+                let pStates = this.grid[i][j].states;
+
+                // Get new states and the direction of the possible collapse
+                let [nStates, collapse_dir] = this.matcher.match(pStates, neighbors);
+
+                // If the size of the previous and new states are different,
+                // and the length of new states is greater than 0
+                if (pStates.length != nStates.length && nStates.length > 0) {
+                    // Update tiles states to be the new states
+                    this.grid[i][j].states = nStates;
+
+                    this.grid[i][j].Highlight();
+
+                    // If the length of new states is 1, it means that
+                    // the tile has collapsed
+                    if (nStates.length == 1) {
+                        // Set the color of the tile to the coresponding paterns (0,0) tile
+                        this.grid[i][j].color = this.patterns[nStates[0]];
+                        // Start the animation in the specified direction
+                        this.grid[i][j].slowReveal(collapse_dir);
+                    } else {
+                        let r = 0;
+                        let g = 0;
+                        let b = 0;
+                        for (let k = 0; k < nStates.length; k++) {
+                            r = red(this.patterns[nStates[k]])
+                            g = green(this.patterns[nStates[k]])
+                            b = blue(this.patterns[nStates[k]])
+                        }
+                        this.grid[i][j].color = color(
+                            r / nStates.length,
+                            g / nStates.length,
+                            b / nStates.length
+                        );
+                    }
+
+                    // For every neighbor indicies
+                    for (let neighbor of neighborIndicies) {
+                        // If those indicies are not already in the 
+                        // affected array or in the new affected array, 
+                        // add it to the new affected array 
+                        if (!this.affected.includes(neighbor)) {
+                            this.affected.push(neighbor);
+                        }
                     }
                 }
             }
-            // }
 
             // Update the affected array 
             // this.affected = nAffected;
