@@ -14,7 +14,7 @@ function setup() {
     // frameRate(5);
 
     originImage = loadImage(
-        "data/demo-5.png",
+        "data/demo-3.png",
         () => createField(),
         () => console.log("couldn't loaded the image")
     );
@@ -53,11 +53,10 @@ function draw() {
             }
         }
 
-        let russia = 4;
-        if (frameCount % russia == 0) {
+        // let russia = deltaTime;
+        let russia = 700 / deltaTime;
+        for (let i = 0; i < russia; i++)
             // WFC.updateChunk();
-            for (let i = 0; i < russia * 1; i++)
-                WFC.updateStep();
-        }
+            WFC.updateStep();
     }
 }

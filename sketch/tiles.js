@@ -86,7 +86,7 @@ class Tile {
             rect(x, y, w, h);
             this.highlight = false;
         } else {
-            if (this.states.length < 26 && this.states.length != this.pLen) {
+            if (this.states.length < 50 && this.states.length != this.pLen) {
                 const sLen = this.states.length;
                 this.pLen = sLen;
 
@@ -108,7 +108,7 @@ class Tile {
                 // let br = (1 - this.states.length / this.total_states) * 0.8 + 0.2;
                 // fill(255, br * 127);
                 noStroke();
-                ellipse(x + w / 2, y + h / 2, w * (1 / this.states.length), h * (1 / this.states.length));
+                ellipse(x + w / 2, y + h / 2, w * map(this.states.length, 0, 100, 0.9, 0), h * map(this.states.length, 0, 100, 0.9, 0));
             }
 
             // if (this.color) {
