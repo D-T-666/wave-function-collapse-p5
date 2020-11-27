@@ -58,7 +58,8 @@ function draw() {
         if (done)
             done = false;
 
-        let steps = 10;//frameRate() / 3; //700 / deltaTime;
+        // let steps = 10;//frameRate() / 3; 
+        let steps = 700 / deltaTime;
 
         // console.time(steps + " steps");
         for (let i = 0; i < steps; i++)

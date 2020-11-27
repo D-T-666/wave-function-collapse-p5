@@ -49,7 +49,7 @@ class Tile {
                 fill('#0f0f25');
                 noStroke();
                 rect(x, y, w, h);
-                fill(this.color);
+                fill(this.color || color(255, 0, 0));
                 noStroke();
 
                 if (this.reveal_timer > 0) {
@@ -84,46 +84,28 @@ class Tile {
             noStroke();
             fill('#0f0f25');
             rect(x, y, w, h);
+
             this.highlight = false;
+            this.display();
         } else {
-            if (this.states.length < 50 && this.states.length != this.pLen) {
-                const sLen = this.states.length;
+            if (this.states.length < 50 && this.states.length - this.pLen != 0) {
+                const sLen = this.states.length
                 this.pLen = sLen;
 
                 noStroke();
                 fill('#0f0f25');
                 rect(x, y, w, h);
 
-                // colorMode(HSB, 255, 255, 255);
-                // fill(sLen * 12 + 50, 128, 255, 1 - sLen / 10);
-
-                fill(this.color);
-                // textAlign(CENTER, CENTER);
-                // textSize(min(tileHeight, tileWidth) / 2);
-                // text(sLen, x + w / 2, y + h / 2);
-
-                // colorMode(RGB);
-
-
-                // let br = (1 - this.states.length / this.total_states) * 0.8 + 0.2;
-                // fill(255, br * 127);
+                fill(this.color || color(255, 0, 0));
                 noStroke();
-                ellipse(x + w / 2, y + h / 2, w * map(this.states.length, 0, 100, 0.9, 0), h * map(this.states.length, 0, 100, 0.9, 0));
+                ellipse(
+                    x + w / 2,
+                    y + h / 2,
+                    w * map(sLen, 0, 100, 0.9, 0),
+                    h * map(sLen, 0, 100, 0.9, 0)
+                );
             }
-
-            // if (this.color) {
-            //     fill(this.color);
-            //     noStroke();
-            //     rect(
-            //         x + tileSpacing / 2,
-            //         y + tileSpacing / 2,
-            //         w - tileSpacing,
-            //         h - tileSpacing,
-            //         tileBorderRadius
-            //     );
-            // }
         }
-
     }
 
     Highlight() {
@@ -134,15 +116,16 @@ class Tile {
         // Set w, h to size
         let w = tileWidth;
         let h = tileHeight;
-        fill(127);
-        noStroke();
+        noFill();
+        stroke(124, 74, 232, 30);
+        strokeWeight(2);
         rect(
-            x + tileSpacing / 2,
-            y + tileSpacing / 2,
-            w - tileSpacing,
-            h - tileSpacing,
+            x + tileSpacing / 2 + 1,
+            y + tileSpacing / 2 + 1,
+            w - tileSpacing - 2,
+            h - tileSpacing - 2,
             tileBorderRadius
         );
-        this.highlight = true;
+        // this.highlight = true;
     }
 }

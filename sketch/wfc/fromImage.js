@@ -46,37 +46,39 @@ async function createFromImage(img, n = 2, symmetry = false, w = 16, h = 16) {
                 }
             }
 
-            // Now that we have our pattern extracted wecheck if the symmetry is enabled.
-            if (symmetry) {
-                // If symmetry is enabled, we need to do all the rotations and reflections.
-                // Loop over all directions.
-                for (let rotation = 0; rotation < 4; rotation++) {
-                    // Tanspose the pattern
-                    pattern = transpose2DArray(pattern);
-                    // Check if this instance of the pattern is in the
+            if (!patterns.includes(JSON.stringify(pattern))) {
+                // Now that we have our pattern extracted wecheck if the symmetry is enabled.
+                if (symmetry) {
+                    // If symmetry is enabled, we need to do all the rotations and reflections.
+                    // Loop over all directions.
+                    for (let rotation = 0; rotation < 4; rotation++) {
+                        // Tanspose the pattern
+                        pattern = transpose2DArray(pattern);
+                        // Check if this instance of the pattern is in the
+                        // patterns list. If not, add it to the list
+                        let stringified = JSON.stringify(pattern);
+                        if (!patterns.includes(stringified)) {
+                            patterns.push(stringified);
+                        }
+                        // Flip the pattern
+                        pattern = flip1DArray(pattern);
+                        // Check if this instance of the pattern is in the
+                        // patterns list. If not, add it to the list
+                        stringified = JSON.stringify(pattern);
+                        if (!patterns.includes(stringified)) {
+                            patterns.push(stringified);
+                        }
+
+                        // If you think about it Transpose+Flip = Rot90°
+                    }
+                } else {
+                    // If we're not doing any symmetry, We can just
+                    // check if this instance of the pattern is in the
                     // patterns list. If not, add it to the list
                     let stringified = JSON.stringify(pattern);
                     if (!patterns.includes(stringified)) {
                         patterns.push(stringified);
                     }
-                    // Flip the pattern
-                    pattern = flip1DArray(pattern);
-                    // Check if this instance of the pattern is in the
-                    // patterns list. If not, add it to the list
-                    stringified = JSON.stringify(pattern);
-                    if (!patterns.includes(stringified)) {
-                        patterns.push(stringified);
-                    }
-
-                    // If you think about it Transpose+Flip = Rot90°
-                }
-            } else {
-                // If we're not doing any symmetry, We can just
-                // check if this instance of the pattern is in the
-                // patterns list. If not, add it to the list
-                let stringified = JSON.stringify(pattern);
-                if (!patterns.includes(stringified)) {
-                    patterns.push(stringified);
                 }
             }
         }

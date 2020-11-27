@@ -217,6 +217,8 @@ class Field {
 
                 // Start the reveal animation
                 this.grid[iMin][jMin].slowReveal();
+
+                done = true;
             }
 
             while (this.affected.length > 0) {
@@ -228,14 +230,6 @@ class Field {
                     if (current == undefined)
                         return;
                 }
-
-                // For every affected tile
-                // let current = this.affected.pop();
-                // while (this.grid[current[0]][current[1]].hasCollapsed()) {
-                //     current = this.affected.pop();
-                //     if (current == undefined)
-                //         return;
-                // }
 
                 // Get the location
                 let [i, j] = current;
@@ -257,8 +251,10 @@ class Field {
                 // Get previous states 
                 let pStates = this.grid[i][j].states;
 
+                // console.time("mathcher.match");
                 // Get new states and the direction of the possible collapse
                 let [nStates, collapse_dir] = this.matcher.match(pStates, neighbors);
+                // console.timeEnd("mathcher.match");
 
                 // If the size of the previous and new states are different,
                 // and the length of new states is greater than 0
@@ -280,14 +276,14 @@ class Field {
                         let g = 0;
                         let b = 0;
                         for (let k = 0; k < nStates.length; k++) {
-                            r = red(this.patterns[nStates[k]])
-                            g = green(this.patterns[nStates[k]])
-                            b = blue(this.patterns[nStates[k]])
+                            r += red(this.patterns[nStates[k]])
+                            g += green(this.patterns[nStates[k]])
+                            b += blue(this.patterns[nStates[k]])
                         }
                         this.grid[i][j].color = color(
-                            r / nStates.length,
-                            g / nStates.length,
-                            b / nStates.length
+                            r / (nStates.length * 2 - 1),
+                            g / (nStates.length * 2 - 1),
+                            b / (nStates.length * 2 - 1)
                         );
                     }
 
@@ -304,10 +300,6 @@ class Field {
 
                 break;
             }
-
-            // Update the affected array 
-            // this.affected = nAffected;
-            // }
         }
     }
 }
