@@ -13,8 +13,10 @@ function setup() {
 
     // frameRate(1);
 
+    let { pattern } = getURLParams();
+
     originImage = loadImage(
-        "data/demo-3.png",
+        "data/" + (pattern || "demo-3") + ".png",
         () => createField(),
         () => console.log("couldn't loaded the image")
     );
