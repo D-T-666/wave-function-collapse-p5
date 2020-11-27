@@ -57,16 +57,21 @@ function draw() {
                     elt.highlight = true;
                 elt.display();
             }
+
         if (done)
             done = false;
 
-        // let steps = 10;//frameRate() / 3; 
+        // let steps = 100;
         let steps = 700 / deltaTime;
 
-        // console.time(steps + " steps");
+        console.time(steps + " steps");
+
         for (let i = 0; i < steps; i++)
-            // WFC.updateChunk();
             WFC.updateStep();
-        // console.timeEnd(steps + " steps");
+
+        console.timeEnd(steps + " steps");
+
+        // noLoop();
     }
+
 }

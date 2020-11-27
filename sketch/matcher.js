@@ -1,66 +1,37 @@
 class Matcher {
     constructor() {
-        // Initializes patterns as an empty array
         this.patterns = [];
     }
 
     addPattern(pattern, neighbor, direction) {
-        // Checks if there already is a pattern key
-        // in the patterns list
         if (this.patterns[pattern] != undefined) {
-            // In case there already is, it just appends the 
-            // neighbor in the specified direction 
             this.patterns[pattern][direction].push(neighbor);
         } else {
-            // In case pattern key hasn't been added yet, add
-            // it and also initialize all the neighbor lists
             this.patterns[pattern] = [[], [], [], []];
             this.patterns[pattern][direction].push(neighbor); // This made it work!
         }
     }
 
+    // TODO optimize this part
     match(pStates, neighbor_states) {
-        // Initialize the new states list to be the previous states list
-        // since there is no chance that a new possibility will be added.
-        // This just saves some time.
-        let nStates = pStates;
-        let length = nStates;
-        let i = 0;
+        let possibilities = pStates;
 
-        let collapse_dir = 2;
-
-        // Loop over every direction. 
         for (let direction = 0; direction < 4; direction++) {
-            let neighbor_posibilities = [];
+            let current_possibilities = [];
 
-            // Get all the possible neighbors for each neighbor in the oposite direction.
             neighbor_states[direction].forEach(state => {
-                // neighbor_posibilities = [...neighbor_posibilities, ...this.patterns[state][(direction + 2) % 4]];
-                neighbor_posibilities.push(...this.patterns[state][(direction + 2) % 4]);
+                this.patterns[state][(direction + 2) % 4].forEach(a => {
+                    if (!current_possibilities.includes(a))
+                        current_possibilities.push(a);
+                });
             });
 
-            for (i = 0; i < length; i++) {
-                if (!neighbor_posibilities.includes(nStates[i])) {
-                    nStates.splice(i, 1);
-                    i--;
-                    length--;
-                }
-            }
-
-            // Get the intersection of the previous states and the possibilities.
-            nStates = nStates.filter((a) => neighbor_posibilities.includes(a));
-
-            // console.log(length - nStates.length);
-            // length = nStates.length;
-
-
-            if (length == 1 && collapse_dir == 2) {
-                collapse_dir = direction % 2;
-            }
+            possibilities = possibilities.filter((a) => current_possibilities.includes(a));
         }
 
-        return [nStates, collapse_dir];
+        return [possibilities, 2];
     }
+
 
     static tileCompatible(a, b, direction) {
         let A = [...a];

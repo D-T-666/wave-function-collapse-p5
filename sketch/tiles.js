@@ -86,7 +86,7 @@ class Tile {
             rect(x, y, w, h);
 
             this.highlight = false;
-            this.display();
+            // this.display();
         } else {
             if (this.states.length < 50 && this.states.length - this.pLen != 0) {
                 const sLen = this.states.length
