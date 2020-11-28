@@ -10,7 +10,4 @@ This is an implementation of the mighty **Wave Function Collapse** Algorithm (ov
 4. [Parallel Wave Function Collapse - Jan Orlowski and Amy Lee](https://amylh.github.io/WaveCollapseGen/)
 5. WFC in processing\.py - solub on [processing.org](https://discourse.processing.org/t/wave-collapse-function-algorithm-in-processing/12983)
 
-<iframe 
-    src="https://d-t-666.github.io/wave-function-collapse-p5/?pattern=demo-1"
-    style="width:100%;height:300px;"
-></iframe>
+![A gif of the demo working](https://d-t-666.github.io/wave-function-collapse-p5/data/wfc-0.1.gif)
