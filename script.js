@@ -46,6 +46,7 @@ function createField() {
 }
 
 let done = false;
+let steps = 5;
 
 function draw() {
 
@@ -58,11 +59,12 @@ function draw() {
                 elt.display();
             }
 
-        if (done)
+        if (done) {
             done = false;
+            // steps++;
+        }
 
-        // let steps = 100;
-        let steps = 700 / deltaTime;
+        // steps = 700 / deltaTime;
 
         console.time(steps + " steps");
 
@@ -73,5 +75,4 @@ function draw() {
 
         // noLoop();
     }
-
 }
