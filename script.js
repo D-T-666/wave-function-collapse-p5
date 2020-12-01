@@ -8,12 +8,14 @@ let finished = false;
 let steps = 100;
 let avg_steps = 0;
 let render_frames = 0;
+let url_params;
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   background('#0f0f25');
 
-  let { pattern } = getURLParams();
+  url_params = getURLParams();
+  let { pattern } = url_params;
 
   sampleImage = loadImage(
     "data/" + (pattern || "demo-3") + ".png",
@@ -23,10 +25,12 @@ function setup() {
 }
 
 function createField() {
+  const N = Number(url_params.n || "3");
+  const symmetry = Number(url_params.symmetry || "1");
   Field.createFromImage(
     sampleImage,
-    N = 3,
-    symmetry = true,
+    N,
+    symmetry,
     w = floor(width / 16),
     h = floor(height / 16)
   ).then(
@@ -56,13 +60,11 @@ function draw() {
       for (let elt of row)
         elt.display();
 
-    steps = 1200 / deltaTime;
+    steps = 2200 / deltaTime;
     avg_steps += steps;
     // console.log(avg_steps / render_frames)
 
     if (!finished)
-      // if (frameCount % 2 == 0)
-      //   WFC.updateChunk();
       for (let i = 0; i < steps; i++)
         WFC.updateStep();
 
