@@ -1,4 +1,4 @@
-let tileHeight;
-let tileWidth;
+let tileH;
+let tileW;
 let tileSpacing;
 let tileBorderRadius;

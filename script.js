@@ -1,78 +1,73 @@
+let sampleImage;
 let canvas;
-
 let WFC;
 
-let originImage;
-
 let readyToGenerate = false;
+let finished = false;
 
+let steps = 100;
+let avg_steps = 0;
+let render_frames = 0;
 
 function setup() {
-    canvas = createCanvas(windowWidth, windowHeight);
-    background('#0f0f25');
+  canvas = createCanvas(windowWidth, windowHeight);
+  background('#0f0f25');
 
-    // frameRate(1);
+  let { pattern } = getURLParams();
 
-    let { pattern } = getURLParams();
-
-    originImage = loadImage(
-        "data/" + (pattern || "demo-3") + ".png",
-        () => createField(),
-        () => console.log("couldn't loaded the image")
-    );
-
+  sampleImage = loadImage(
+    "data/" + (pattern || "demo-3") + ".png",
+    () => createField(),
+    () => console.log("couldn't loaded the image")
+  );
 }
 
 function createField() {
-    createFromImage(
-        originImage,
-        N = 3,
-        symmetry = true,
-        w = floor(width / 16),
-        h = floor(height / 16)
+  Field.createFromImage(
+    sampleImage,
+    N = 3,
+    symmetry = true,
+    w = floor(width / 16),
+    h = floor(height / 16)
+  ).then(
+    (field) => {
+      WFC = field;
+      WFC.seed();
 
-    ).then(
-        (field) => {
-            WFC = field;
-            WFC.seed();
-            readyToGenerate = true;
-            tileHeight = height / WFC.H;
-            tileWidth = width / WFC.W;
-            tileSpacing = min(tileHeight, tileWidth) / 8;
-            tileBorderRadius = tileSpacing * 1.3;
-            console.log("Succesfuly finished loading...");
-        }
-    );
+      readyToGenerate = true;
+      background('#0f0f25');
+
+      tileW = width / WFC.W;
+      tileH = height / WFC.H;
+      tileSpacing = min(tileH, tileW) / 8;
+      tileBorderRadius = tileSpacing * 1.3;
+
+      console.log("Succesfully finished loading...");
+      console.log({ width: WFC.W, height: WFC.H });
+      console.time("Finished collapsing in");
+    }
+  );
 }
 
-let done = false;
-let steps = 5;
-
 function draw() {
+  if (readyToGenerate) {
 
-    if (readyToGenerate) {
+    for (let row of WFC.grid)
+      for (let elt of row)
+        elt.display();
 
-        for (let row of WFC.grid)
-            for (let elt of row) {
-                if (done)
-                    elt.highlight = true;
-                elt.display();
-            }
+    steps = 1200 / deltaTime;
+    avg_steps += steps;
+    // console.log(avg_steps / render_frames)
 
-        if (done) {
-            done = false;
-            // steps++;
-        }
+    if (!finished)
+      // if (frameCount % 2 == 0)
+      //   WFC.updateChunk();
+      for (let i = 0; i < steps; i++)
+        WFC.updateStep();
 
-        // steps = 700 / deltaTime;
-
-        console.time(steps + " steps");
-
-        for (let i = 0; i < steps; i++)
-            WFC.updateStep();
-
-        console.timeEnd(steps + " steps");
-
-        // noLoop();
-    }
+    render_frames++;
+  } else {
+    background(0, 60, 20);
+  }
 }
