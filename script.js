@@ -12,9 +12,36 @@ let url_params;
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
-  background('#0f0f25');
 
   url_params = getURLParams();
+  displayBackgroundTiles = Number(url_params.dbt || "0");
+  if (Number(url_params.stictches || "1")) {
+    widthDivider = 28;
+    heightDivider = 22;
+    drawStitch = (x, y, w, h) => {
+      const sw = w / 3.5;
+      strokeWeight(sw);
+      line(
+        x + sw / 2,
+        y + sw / 2,
+        x + w / 2 - sw / 2 - sw / 8,
+        y + h - sw / 2
+      );
+      line(
+        x + w - sw / 2,
+        y + sw / 2,
+        x + w / 2 + sw / 2 + sw / 8,
+        y + h - sw / 2
+      );
+    };
+  } else {
+    widthDivider = 24;
+    heightDivider = 24;
+    drawStitch = (x, y, w, h) => {
+      noStroke();
+      rect(x, y, w, h, tileBorderRadius);
+    }
+  }
   let { pattern } = url_params;
 
   sampleImage = loadImage(
@@ -31,8 +58,8 @@ function createField() {
     sampleImage,
     N,
     symmetry,
-    w = floor(width / 28),
-    h = floor(height / 28)
+    w = floor(width / widthDivider),
+    h = floor(height / heightDivider)
   ).then(
     (field) => {
       WFC = field;
@@ -74,6 +101,8 @@ function draw() {
 
     rendered_frames++;
   } else {
-    background(0, 60, 20);
+    background(0, 10, 60);
   }
 }
+
+let drawStitch;

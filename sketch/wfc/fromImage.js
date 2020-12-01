@@ -19,7 +19,7 @@ Field.createFromImage = async (img, n = 2, symmetry = false, w = 16, h = 16) => 
     for (let j = 0; j < iW; j++) {
       let col = [];
       // Populate the ellement with values.
-      for (let k = 0; k < 4; k++)
+      for (let k = 0; k < 3; k++)
         col.push(img.pixels[(i * iW + j) * 4 + k]);
 
       col = JSON.stringify(col);
@@ -123,7 +123,7 @@ Field.createFromImage = async (img, n = 2, symmetry = false, w = 16, h = 16) => 
   console.timeEnd("Set up color table");
 
   color_table = color_table.map(JSON.parse);
-  background_color = color(...color_table[color_frequencies.indexOf(color_frequencies.reduce((a, b) => a > b ? a : b))]);
+  background_color = color(...color_table[color_frequencies.indexOf(color_frequencies.reduce((a, b) => a > b ? a : b))], 150);
 
   // Return a Field object initialized with the patterns list,
   // matcher and the specified width and height

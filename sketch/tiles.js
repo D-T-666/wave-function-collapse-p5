@@ -51,66 +51,50 @@ class Tile {
 
     if (this.hasCollapsed()) {
       if (this.reveal_timer > 0.02) {
-        if ((this.color || color(255, 0, 0)) != background_color) {
+        if ((this.color || color(255, 0, 0)) != background_color || displayBackgroundTiles) {
           fill(background_color);
-          noStroke();
-          rect(x, y, w, h);
-          fill(this.color || color(255, 0, 0));
-          noStroke();
-
-          if (this.reveal_timer > 0) {
-            if (this.reveal_direction == 0) {
-              w = w * (1 - this.reveal_timer / this.reveal_timer_max);
-              x += (tileW - w) / 2;
-            }
-            if (this.reveal_direction == 1) {
-              h = h * (1 - this.reveal_timer / this.reveal_timer_max);
-              y += (tileH - h) / 2;
-            }
-            if (this.reveal_direction == 2) {
-              w = w * (1 - this.reveal_timer / this.reveal_timer_max);
-              x += (tileW - w) / 2;
-              h = h * (1 - this.reveal_timer / this.reveal_timer_max);
-              y += (tileH - h) / 2;
-            }
-          }
-
-          this.reveal_timer = lerp(this.reveal_timer, 0, 0.3);
-
-          rect(
+          stroke(background_color);
+          drawStitch(
             x + tileSpacing / 2,
             y + tileSpacing / 2,
             w - tileSpacing,
-            h - tileSpacing,
-            tileBorderRadius
-          );
+            h - tileSpacing
+          )
+          noStroke();
+
+          this.reveal_timer = lerp(this.reveal_timer, 0, 0.3);
+
+          stroke(this.color || color(255, 0, 0, map(constrain(this.pLen, 0, 50), 0, 50, 255, 0)));
+          drawStitch(
+            x + tileSpacing / 2,
+            y + tileSpacing / 2,
+            w - tileSpacing,
+            h - tileSpacing
+          )
         }
       }
       this.pLen = 1;
 
     } else {
       if (this.states.length - this.pLen != 0) {
-
-        noStroke();
         fill(background_color);
-        rect(x, y, w, h);
-
-        this.color.setAlpha(map(constrain(this.pLen, 0, 100), 0, 100, 255, 0));
-        fill(this.color || color(255, 0, 0, map(constrain(this.pLen, 0, 50), 0, 50, 255, 0)));
-        // fill(this.color || color(255, 0, 0));
-        noStroke();
-        // ellipse(
-        //   x + w / 2,
-        //   y + h / 2,
-        //   w * map(constrain(this.pLen, 0, 150), 0, 150, 0.9, 0)
-        // );
-        rect(
+        stroke(background_color);
+        drawStitch(
           x + tileSpacing / 2,
           y + tileSpacing / 2,
           w - tileSpacing,
-          h - tileSpacing,
-          tileBorderRadius
-        );
+          h - tileSpacing
+        )
+
+        this.color.setAlpha(map(constrain(this.pLen, 0, 100), 0, 100, 255, 0));
+        fill(this.color || color(255, 0, 0, map(constrain(this.pLen, 0, 50), 0, 50, 255, 0)));
+        stroke(this.color || color(255, 0, 0, map(constrain(this.pLen, 0, 50), 0, 50, 255, 0)));
+        drawStitch(
+          x + tileSpacing / 2,
+          y + tileSpacing / 2,
+          w - tileSpacing,
+          h - tileSpacing
+        )
       }
     }
     const sLen = this.states.length;
