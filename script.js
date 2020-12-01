@@ -7,7 +7,7 @@ let finished = false;
 
 let steps = 100;
 let avg_steps = 0;
-let render_frames = 0;
+let rendered_frames = 0;
 let url_params;
 
 function setup() {
@@ -39,7 +39,7 @@ function createField() {
       WFC.seed();
 
       readyToGenerate = true;
-      background('#0f0f25');
+      background(background_color);
 
       tileW = width / WFC.W;
       tileH = height / WFC.H;
@@ -56,19 +56,23 @@ function createField() {
 function draw() {
   if (readyToGenerate) {
 
+    let time_start = performance.now();
     for (let row of WFC.grid)
       for (let elt of row)
         elt.display();
 
-    steps = 2200 / deltaTime;
-    avg_steps += steps;
-    // console.log(avg_steps / render_frames)
-
+    let i = 0;
     if (!finished)
-      for (let i = 0; i < steps; i++)
+      while (i++ < 10000) {
         WFC.updateStep();
+        if (i % 10 == 0)
+          if (performance.now() - time_start > 32) {
+            avg_steps += i;
+            break;
+          }
+      }
 
-    render_frames++;
+    rendered_frames++;
   } else {
     background(0, 60, 20);
   }

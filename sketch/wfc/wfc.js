@@ -1,5 +1,6 @@
 class Field {
-  constructor(patterns, matcher, W, H) {
+  constructor(color_table, patterns, matcher, W, H) {
+    this.color_table = color_table;
     this.patterns = patterns;
     this.patternsLength = patterns.length;
     this.matcher = matcher;
@@ -81,7 +82,7 @@ class Field {
     const i = floor(random(0.25, 0.75) * this.H);
     const j = floor(random(0.25, 0.75) * this.W);
     this.grid[i][j].collapse();
-    this.grid[i][j].color = this.patterns[this.grid[i][j].states[0]];
+    this.grid[i][j].color = this.color_table[this.patterns[this.grid[i][j].states[0]]];
     this.grid[i][j].slowReveal(2);
     this.affected = this.getNeighborIndicies(i, j);
   }
@@ -121,7 +122,7 @@ class Field {
         this.affected = this.getNeighborIndicies(iMin, jMin);
 
         // Set the color of the tile to the corresponding patterns (0,0) tile
-        this.grid[iMin][jMin].color = this.patterns[this.grid[iMin][jMin].states[0]];
+        this.grid[iMin][jMin].color = this.color_table[this.patterns[this.grid[iMin][jMin].states[0]]];
 
         // Start the reveal animation
         this.grid[iMin][jMin].slowReveal();
@@ -175,7 +176,7 @@ class Field {
         // the tile has collapsed
         if (nStatesLen == 1) {
           // Set the color of the tile to the coresponding paterns (0,0) tile
-          this.grid[i][j].color = this.patterns[nStates[0]];
+          this.grid[i][j].color = this.color_table[this.patterns[nStates[0]]];
           this.grid[i][j]._hasCollapsed = true;
           // Start the animation in the specified direction
           this.grid[i][j].slowReveal(collapse_dir);
@@ -184,15 +185,14 @@ class Field {
           let g = 0;
           let b = 0;
           for (let k = 0; k < nStatesLen; k++) {
-            r += red(this.patterns[nStates[k]]);
-            g += green(this.patterns[nStates[k]]);
-            b += blue(this.patterns[nStates[k]]);
+            r += this.color_table[this.patterns[nStates[k]]][0];
+            g += this.color_table[this.patterns[nStates[k]]][1];
+            b += this.color_table[this.patterns[nStates[k]]][2];
           }
-          const fraction = (nStatesLen * 2 - 1);
           this.grid[i][j].color = color(
-            r / fraction,
-            g / fraction,
-            b / fraction
+            r / nStatesLen,
+            g / nStatesLen,
+            b / nStatesLen
           );
         }
 

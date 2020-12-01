@@ -9,6 +9,7 @@ Field.createFromImage = async (img, n = 2, symmetry = false, w = 16, h = 16) => 
   // but rather (width*height*4) we need to reshape the image manually.
   let rgba_map = [];
   let color_table = [];
+  let color_frequencies = [];
 
   // Loop over the height of the image.
   for (let i = 0; i < iH; i++) {
@@ -22,11 +23,16 @@ Field.createFromImage = async (img, n = 2, symmetry = false, w = 16, h = 16) => 
         col.push(img.pixels[(i * iW + j) * 4 + k]);
 
       col = JSON.stringify(col);
+      let ind;
 
-      if (!color_table.includes(col))
+      if (!color_table.includes(col)) {
+        color_frequencies.push(0);
         color_table.push(col);
+      }
+      ind = color_table.indexOf(col);
 
-      rgba_map[i][j] = color_table.indexOf(col);
+      rgba_map[i][j] = ind;
+      color_frequencies[ind] += 1;
     }
   }
   rgba_map = transpose2DArray(flip1DArray(rgba_map));
@@ -112,13 +118,14 @@ Field.createFromImage = async (img, n = 2, symmetry = false, w = 16, h = 16) => 
   console.time("Set up color table");
   let colors = [];
   for (let patt of patterns) {
-    colors.push(color(...JSON.parse(color_table[JSON.parse(patt)[0][0]])));
+    colors.push(JSON.parse(patt)[0][0]);
   }
   console.timeEnd("Set up color table");
 
-  // callBack(new Field(patterns, matcher, w, h));
+  color_table = color_table.map(JSON.parse);
+  background_color = color(...color_table[color_frequencies.indexOf(color_frequencies.reduce((a, b) => a > b ? a : b))]);
 
   // Return a Field object initialized with the patterns list,
   // matcher and the specified width and height
-  return new Field(colors, matcher, w, h);
+  return new Field(color_table, colors, matcher, w, h);
 }
