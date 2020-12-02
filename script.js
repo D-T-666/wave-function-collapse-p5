@@ -26,16 +26,16 @@ function setup() {
       const sw = w / 4;
       strokeWeight(sw);
       line(
-        x + sw / 2 - w / 16,
+        x + sw / 2 - w / 32,
         y + sw / 2,
-        x - sw / 2 + w / 2 - sw / 8,
-        y + sw / 2 + h + sw / 2
+        x - sw / 2 + w / 2 - sw / 16,
+        y + sw / 2 + h
       );
       line(
-        x - sw / 2 + w + w / 16,
+        x - sw / 2 + w + w / 32,
         y + sw / 2,
-        x + sw / 2 + w / 2 + sw / 8,
-        y + sw / 2 + h + sw / 2
+        x + sw / 2 + w / 2 + sw / 16,
+        y + sw / 2 + h
       );
       smooth();
     };
