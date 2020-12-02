@@ -83,7 +83,7 @@ class Field {
     const j = floor(random(0.25, 0.75) * this.W);
     this.grid[i][j].collapse();
     this.grid[i][j].color = this.color_table[this.patterns[this.grid[i][j].states[0]]];
-    this.grid[i][j].slowReveal(2);
+
     this.affected = this.getNeighborIndicies(i, j);
   }
 
@@ -123,9 +123,6 @@ class Field {
 
         // Set the color of the tile to the corresponding patterns (0,0) tile
         this.grid[iMin][jMin].color = this.color_table[this.patterns[this.grid[iMin][jMin].states[0]]];
-
-        // Start the reveal animation
-        this.grid[iMin][jMin].slowReveal();
       }
 
       // For every affected tile
@@ -159,7 +156,7 @@ class Field {
       // console.time("mathcher.match");
       // Get new states and the direction of the possible collapse
       // console.time("match.match");
-      let [nStates, collapse_dir] = this.matcher.match(pStates, neighbors);
+      let nStates = this.matcher.match(pStates, neighbors);
       // console.timeEnd("match.match");
       const nStatesLen = nStates.length;
       // console.timeEnd("mathcher.match");
@@ -170,8 +167,6 @@ class Field {
         // Update tiles states to be the new states
         this.grid[i][j].states = nStates;
 
-        this.grid[i][j].Highlight();
-
         // If the length of new states is 1, it means that
         // the tile has collapsed
         if (nStatesLen == 1) {
@@ -179,16 +174,16 @@ class Field {
           this.grid[i][j].color = this.color_table[this.patterns[nStates[0]]];
           this.grid[i][j]._hasCollapsed = true;
           // Start the animation in the specified direction
-          this.grid[i][j].slowReveal(collapse_dir);
+
         } else {
-          let r = 0;
+          let r = 255;
           let g = 0;
           let b = 0;
-          for (let k = 0; k < nStatesLen; k++) {
-            r += this.color_table[this.patterns[nStates[k]]][0];
-            g += this.color_table[this.patterns[nStates[k]]][1];
-            b += this.color_table[this.patterns[nStates[k]]][2];
-          }
+          // for (let k = 0; k < nStatesLen && k < 10; k++) {
+          //   r += this.color_table[this.patterns[nStates[k]]][0];
+          //   g += this.color_table[this.patterns[nStates[k]]][1];
+          //   b += this.color_table[this.patterns[nStates[k]]][2];
+          // }
           this.grid[i][j].color = color(
             r / nStatesLen,
             g / nStatesLen,
@@ -207,8 +202,9 @@ class Field {
         }
       }
     } else {
-      if (!finished)
+      if (!finished) {
         console.timeEnd("Finished collapsing in");
+      }
       finished = true;
     }
   }
