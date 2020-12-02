@@ -66,7 +66,6 @@ class Tile {
 
     } else {
       if (this.pLen > 1 && this.states.length - this.pLen != 0) {
-        // noSmooth();
         fill(background_color);
         stroke(background_color);
         drawCell(x, y, w, h);

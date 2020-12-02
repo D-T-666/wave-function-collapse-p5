@@ -37,7 +37,6 @@ function setup() {
         x + sw / 2 + w / 2 + sw / 16,
         y + sw / 2 + h
       );
-      smooth();
     };
   } else {
     widthDivider = 24;
