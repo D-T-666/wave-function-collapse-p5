@@ -173,17 +173,15 @@ class Field {
           // Set the color of the tile to the coresponding paterns (0,0) tile
           this.grid[i][j].color = this.color_table[this.patterns[nStates[0]]];
           this.grid[i][j]._hasCollapsed = true;
-          // Start the animation in the specified direction
-
         } else {
-          let r = 255;
+          let r = 0;
           let g = 0;
           let b = 0;
-          // for (let k = 0; k < nStatesLen && k < 10; k++) {
-          //   r += this.color_table[this.patterns[nStates[k]]][0];
-          //   g += this.color_table[this.patterns[nStates[k]]][1];
-          //   b += this.color_table[this.patterns[nStates[k]]][2];
-          // }
+          for (let k = 0; k < nStatesLen; k++) {
+            r += this.color_table[this.patterns[nStates[k]]][0];
+            g += this.color_table[this.patterns[nStates[k]]][1];
+            b += this.color_table[this.patterns[nStates[k]]][2];
+          }
           this.grid[i][j].color = color(
             r / nStatesLen,
             g / nStatesLen,
