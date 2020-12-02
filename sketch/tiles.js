@@ -1,7 +1,3 @@
-/**
- * Tile(states, total amount of states, x location, y location, width that will be display)
-*/
-
 class Tile {
   constructor(states, total_states, x, y) {
     this.states = states;
@@ -51,50 +47,35 @@ class Tile {
 
     if (this.hasCollapsed()) {
       if (this.reveal_timer > 0.02) {
-        if ((this.color || color(255, 0, 0)) != background_color || displayBackgroundTiles) {
-          fill(background_color);
-          stroke(background_color);
-          drawStitch(
-            x + tileSpacing / 2,
-            y + tileSpacing / 2,
-            w - tileSpacing,
-            h - tileSpacing
-          )
+        if (this.color != background_color || displayBackgroundTiles) {
+          // fill(background_color);
+          // stroke(background_color);
+          // drawCell(x, y, w, h);
+
           noStroke();
 
-          this.reveal_timer = lerp(this.reveal_timer, 0, 0.3);
+          this.reveal_timer = lerp(this.reveal_timer, 0, 0.99);
 
-          stroke(this.color || color(255, 0, 0, map(constrain(this.pLen, 0, 50), 0, 50, 255, 0)));
-          drawStitch(
-            x + tileSpacing / 2,
-            y + tileSpacing / 2,
-            w - tileSpacing,
-            h - tileSpacing
-          )
+          stroke(this.color);
+          fill(this.color);
+          drawCell(x, y, w, h);
+
         }
       }
       this.pLen = 1;
 
     } else {
-      if (this.states.length - this.pLen != 0) {
+      if (this.pLen > 1 && this.states.length - this.pLen != 0) {
+        // noSmooth();
         fill(background_color);
         stroke(background_color);
-        drawStitch(
-          x + tileSpacing / 2,
-          y + tileSpacing / 2,
-          w - tileSpacing,
-          h - tileSpacing
-        )
+        drawCell(x, y, w, h);
+
 
         this.color.setAlpha(map(constrain(this.pLen, 0, 100), 0, 100, 255, 0));
         fill(this.color || color(255, 0, 0, map(constrain(this.pLen, 0, 50), 0, 50, 255, 0)));
         stroke(this.color || color(255, 0, 0, map(constrain(this.pLen, 0, 50), 0, 50, 255, 0)));
-        drawStitch(
-          x + tileSpacing / 2,
-          y + tileSpacing / 2,
-          w - tileSpacing,
-          h - tileSpacing
-        )
+        drawCell(x, y, w, h);
       }
     }
     const sLen = this.states.length;
@@ -119,6 +100,5 @@ class Tile {
     //   h - tileSpacing - 2,
     //   tileBorderRadius
     // );
-
   }
 }
