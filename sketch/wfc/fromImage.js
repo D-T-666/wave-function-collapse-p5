@@ -96,17 +96,19 @@ Field.createFromImage = async (img, n = 2, symmetry = false, w = 16, h = 16) => 
 
   console.time("Compiled the matcher");
   // Initialize the matcher object
-  let matcher = new Matcher();
-
   let parsed_patterns = [];
+  let matcher = new Matcher();
 
   // Check every pattern for every other pattern
   for (let i = 0; i < patterns.length; i++) {
     for (let j = 0; j < patterns.length; j++) {
+      if (i == 0)
+        parsed_patterns.push(JSON.parse(patterns[j]));
       // Check for compatibility in every direction
       for (let direction = 0; direction < 4; direction++) {
         // If compatible, add it to the matcher as a posibility
-        if (Matcher.tileCompatible(JSON.parse(patterns[i]), JSON.parse(patterns[j]), direction)) {
+        if (Matcher.tileCompatible((parsed_patterns[i]), (parsed_patterns[j]), direction)) {
+          // // if (Matcher.tileCompatible(JSON.parse(patterns[i]), JSON.parse(patterns[j]), direction)) {
           matcher.addPattern(i, j, direction);
         }
       }
@@ -123,7 +125,11 @@ Field.createFromImage = async (img, n = 2, symmetry = false, w = 16, h = 16) => 
   console.timeEnd("Set up color table");
 
   color_table = color_table.map(JSON.parse);
-  background_color = color(...color_table[color_frequencies.indexOf(color_frequencies.reduce((a, b) => a > b ? a : b))], 150);
+
+  // Calculate an opaque background color by darkening and 
+  //hueshifting the most used color in the picture 
+  background_color = color_table[color_frequencies.indexOf(color_frequencies.reduce((a, b) => a > b ? a : b))];
+  background_color = color(background_color[0] * 0.7, background_color[1] * 0.75, background_color[2] * 0.85);
 
   // Return a Field object initialized with the patterns list,
   // matcher and the specified width and height

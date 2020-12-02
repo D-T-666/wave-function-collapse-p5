@@ -15,27 +15,25 @@ function setup() {
 
   url_params = getURLParams();
   displayBackgroundTiles = Number(url_params.dbt || "0");
-  if (Number(url_params.stitches || "1")) {
+  if (Number(url_params.stitches || "0")) {
     widthDivider = 28;
     heightDivider = 22;
-    drawCell = (x, y, w, h) => {
+    drawCell = (x, y, w, h, b = false) => {
       x = x + tileSpacing / 2;
       y = y + tileSpacing / 2;
       w = w - tileSpacing;
-      h = h - tileSpacing;
-      const sw = w / 4;
-      strokeWeight(sw);
+      strokeWeight(b ? sw + 1 : sw);
       line(
         x + sw / 2 - w / 32,
         y + sw / 2,
         x - sw / 2 + w / 2 - sw / 16,
-        y + sw / 2 + h
+        y + h
       );
       line(
         x - sw / 2 + w + w / 32,
         y + sw / 2,
         x + sw / 2 + w / 2 + sw / 16,
-        y + sw / 2 + h
+        y + h
       );
     };
   } else {
@@ -61,7 +59,7 @@ function createField() {
     sampleImage,
     N,
     symmetry,
-    w = floor(width / widthDivider),
+    w = floor(floor(width / widthDivider) / sampleImage.width + .5) * sampleImage.width,
     h = floor(height / heightDivider)
   ).then(
     (field) => {
@@ -71,10 +69,11 @@ function createField() {
       readyToGenerate = true;
       background(background_color);
 
-      tileW = width / WFC.W;
-      tileH = height / WFC.H;
+      tileW = width / floor(width / widthDivider);
+      tileH = height / floor(height / heightDivider);
       tileSpacing = min(tileH, tileW) / 8;
       tileBorderRadius = tileSpacing * 1.3;
+      sw = (tileW - tileSpacing) / 4;
 
       console.log("Succesfully finished loading...");
       console.log({ width: WFC.W, height: WFC.H });

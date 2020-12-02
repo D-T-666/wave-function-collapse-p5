@@ -33,7 +33,7 @@ class Matcher {
           possibilities.delete(i);
     }
 
-    return [Array.from(possibilities), 2];
+    return [...possibilities];
   }
 
 
