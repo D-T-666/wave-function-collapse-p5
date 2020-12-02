@@ -15,37 +15,41 @@ function setup() {
 
   url_params = getURLParams();
   displayBackgroundTiles = Number(url_params.dbt || "0");
-  if (Number(url_params.stictches || "1")) {
+  if (Number(url_params.stitches || "1")) {
     widthDivider = 28;
     heightDivider = 22;
-    drawStitch = (x, y, w, h) => {
-      const sw = w / 3.5;
+    drawCell = (x, y, w, h) => {
+      x = x + tileSpacing / 2;
+      y = y + tileSpacing / 2;
+      w = w - tileSpacing;
+      h = h - tileSpacing;
+      const sw = w / 4;
       strokeWeight(sw);
       line(
-        x + sw / 2,
+        x + sw / 2 - w / 16,
         y + sw / 2,
-        x + w / 2 - sw / 2 - sw / 8,
-        y + h - sw / 2
+        x - sw / 2 + w / 2 - sw / 8,
+        y + sw / 2 + h + sw / 2
       );
       line(
-        x + w - sw / 2,
+        x - sw / 2 + w + w / 16,
         y + sw / 2,
-        x + w / 2 + sw / 2 + sw / 8,
-        y + h - sw / 2
+        x + sw / 2 + w / 2 + sw / 8,
+        y + sw / 2 + h + sw / 2
       );
+      smooth();
     };
   } else {
     widthDivider = 24;
     heightDivider = 24;
-    drawStitch = (x, y, w, h) => {
+    drawCell = (x, y, w, h) => {
       noStroke();
-      rect(x, y, w, h, tileBorderRadius);
+      rect(x + tileSpacing / 2, y + tileSpacing / 2, w - tileSpacing, h - tileSpacing, tileBorderRadius);
     }
   }
-  let { pattern } = url_params;
 
   sampleImage = loadImage(
-    "data/" + (pattern || "demo-3") + ".png",
+    "data/" + (url_params.pattern || "demo-3") + ".png",
     () => createField(),
     () => console.log("couldn't loaded the image")
   );
@@ -105,4 +109,4 @@ function draw() {
   }
 }
 
-let drawStitch;
+let drawCell;
