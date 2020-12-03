@@ -44,11 +44,11 @@ function draw() {
 
     rendered_frames++;
 
-    if (finished) {
-      randomSeed(0);
-      createField();
-      finished = !finished;
-    }
+    // if (finished) {
+    //   randomSeed(0);
+    //   createField();
+    //   finished = !finished;
+    // }
   } else {
     background(0, 10, 60);
   }
