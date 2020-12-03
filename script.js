@@ -10,70 +10,46 @@ let avg_steps = 0;
 let rendered_frames = 0;
 let url_params;
 
+let drawCell;
+
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
-  background('#0f0f25');
-
+  randomSeed(0);
   url_params = getURLParams();
-  let { pattern } = url_params;
+  displayBackgroundTiles = Number(url_params.dbt || "0");
+  createDrawCell();
 
-  sampleImage = loadImage(
-    "data/" + (pattern || "demo-3") + ".png",
-    () => createField(),
-    () => console.log("couldn't loaded the image")
-  );
-}
+  const imagePath = `data/${url_params.pattern || "demo-3"}.png`;
 
-function createField() {
-  const N = Number(url_params.n || "3");
-  const symmetry = Number(url_params.symmetry || "1");
-  Field.createFromImage(
-    sampleImage,
-    N,
-    symmetry,
-    w = floor(width / 28),
-    h = floor(height / 28)
-  ).then(
-    (field) => {
-      WFC = field;
-      WFC.seed();
-
-      readyToGenerate = true;
-      background(background_color);
-
-      tileW = width / WFC.W;
-      tileH = height / WFC.H;
-      tileSpacing = min(tileH, tileW) / 8;
-      tileBorderRadius = tileSpacing * 1.3;
-
-      console.log("Succesfully finished loading...");
-      console.log({ width: WFC.W, height: WFC.H });
-      console.time("Finished collapsing in");
-    }
-  );
+  sampleImage = loadImage(imagePath, createField, () => {
+    alert("Image couldn't be loaded );");
+  });
 }
 
 function draw() {
   if (readyToGenerate) {
-
     let time_start = performance.now();
-    for (let row of WFC.grid)
-      for (let elt of row)
-        elt.display();
+
+    for (let row of WFC.grid) for (let elt of row) elt.display();
 
     let i = 0;
     if (!finished)
-      while (i++ < 10000) {
+      while (i++ < 1000) {
         WFC.updateStep();
-        if (i % 10 == 0)
-          if (performance.now() - time_start > 32) {
-            avg_steps += i;
-            break;
-          }
+
+        if (i % 10 == 0) if (performance.now() - time_start > 33.3) break;
       }
+    avg_steps += i;
+    // WFC.updateChunk();/
 
     rendered_frames++;
+
+    if (finished) {
+      randomSeed(0);
+      createField();
+      finished = !finished;
+    }
   } else {
-    background(0, 60, 20);
+    background(0, 10, 60);
   }
 }
