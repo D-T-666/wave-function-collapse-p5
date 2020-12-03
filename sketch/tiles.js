@@ -34,9 +34,9 @@ class Tile {
 
     if (this.pLen > 1) {
       if (this.hasCollapsed()) {
-        // fill(background_color);
-        // stroke(background_color);
-        // drawCell(x, y, w, h, true);
+        fill(background_color);
+        stroke(background_color);
+        drawCell(x, y, w, h, true);
 
         stroke(this.color);
         fill(this.color);
@@ -45,9 +45,9 @@ class Tile {
         this.pLen = 1;
       } else {
         if (this.states.length !== this.pLen) {
-          // fill(background_color);
-          // stroke(background_color);
-          // drawCell(x, y, w, h, true);
+          fill(background_color);
+          stroke(background_color);
+          drawCell(x, y, w, h, true);
 
           this.color.setAlpha(map(constrain(this.pLen, 0, 100), 0, 100, 210, 0));
           fill(this.color || color(255, 0, 0));
