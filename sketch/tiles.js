@@ -3,7 +3,8 @@ class Tile {
     this.states = states;
     this.pLen = this.states.length;
     this.total_states = total_states;
-    this.pos = createVector(x || 0, y || 0);
+    this.x = x || 0;
+    this.y = y || 0;
     this._hasCollapsed = false;
   }
 
@@ -18,16 +19,21 @@ class Tile {
   }
 
   getEntropy() {
-    // Returns infinity if the tile has collapsed and returns the 
+    // Returns infinity if the tile has collapsed and returns the
     // length of the states if the tile hasn't collapsed
-    return (this.pLen > 1) ? this.pLen : Infinity;
+    if (this.states.length > 1) {
+      return this.states.length;
+    } else {
+      this._hasCollapsed = true;
+      return Infinity;
+    }
   }
 
   display() {
-    // set x coordinate to be the x index of the tile * the size of the tile 
-    let x = (this.pos.x * tileW);
-    // set y coordinate to be the y index of the tile * the size of the tile 
-    let y = (this.pos.y * tileH);
+    // set x coordinate to be the x index of the tile * the size of the tile
+    let x = this.x * tileW;
+    // set y coordinate to be the y index of the tile * the size of the tile
+    let y = this.y * tileH;
     // Set w, h to size
     let w = tileW;
     let h = tileH;
@@ -44,12 +50,20 @@ class Tile {
 
         this.pLen = 1;
       } else {
-        if (this.states.length !== this.pLen) {
+        if (this.states.length / this.pLen < 0.9999) {
           fill(background_color);
           stroke(background_color);
           drawCell(x, y, w, h, true);
 
-          this.color.setAlpha(map(constrain(this.pLen, 0, 100), 0, 100, 210, 0));
+          this.color.setAlpha(
+            map(
+              constrain(this.pLen, 0, this.total_states),
+              0,
+              this.total_states,
+              210,
+              0
+            )
+          );
           fill(this.color || color(255, 0, 0));
           stroke(this.color || color(255, 0, 0));
           drawCell(x, y, w, h);
@@ -58,6 +72,5 @@ class Tile {
       // Update pLen.
       this.pLen = this.states.length;
     }
-
   }
 }

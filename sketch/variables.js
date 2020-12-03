@@ -7,3 +7,5 @@ let widthDivider;
 let heightDivider;
 let background_color = "#0f0f25";
 let displayBackgroundTiles = true;
+let main_timer = 0;
+let total_collapse_count = 0;

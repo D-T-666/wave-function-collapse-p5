@@ -14,7 +14,6 @@ class Matcher {
     this.pattLen = this.patterns.length;
   }
 
-  // TODO optimize this part
   match(pStates, neighbor_states) {
     let possibilities = new Set(pStates);
 
@@ -22,20 +21,18 @@ class Matcher {
       const oppositeDirection = (direction + 2) % 4;
       let current_possibilities = new Set();
 
-      neighbor_states[direction].forEach(state =>
-        this.patterns[state][oppositeDirection].forEach(elt =>
+      neighbor_states[direction].forEach((state) =>
+        this.patterns[state][oppositeDirection].forEach((elt) =>
           current_possibilities.add(elt)
         )
       );
 
       for (let i = 0; i < this.pattLen; i++)
-        if (!current_possibilities.has(i))
-          possibilities.delete(i);
+        if (!current_possibilities.has(i)) possibilities.delete(i);
     }
 
     return [...possibilities];
   }
-
 
   static tileCompatible(a, b, direction) {
     let A = [...a];
@@ -44,7 +41,7 @@ class Matcher {
     // Check if the tile a overlaps b in a specified direction
 
     switch (direction) {
-      case 0:// Checks the up direction
+      case 0: // Checks the up direction
         A.pop();
         B.shift();
 
@@ -64,7 +61,7 @@ class Matcher {
 
         break;
 
-      case 3:// Checks the right direction
+      case 3: // Checks the right direction
         A = transpose2DArray(A);
         A.shift();
         B = transpose2DArray(B);
@@ -78,7 +75,7 @@ class Matcher {
 }
 
 function transpose2DArray(arr) {
-  // Returns a transposed copy of the specified array 
+  // Returns a transposed copy of the specified array
   let nArr = [];
   for (let i = 0; i < arr[0].length; i++) {
     nArr[i] = [];
@@ -90,7 +87,7 @@ function transpose2DArray(arr) {
 }
 
 function flip1DArray(arr) {
-  // Returns a flipped copy of the specified array 
+  // Returns a flipped copy of the specified array
   let nArr = [];
   for (let i = arr.length - 1; i > -1; i--) {
     nArr.push(arr[i]);
@@ -108,7 +105,7 @@ function Min(lis) {
   // get the minimum number from a 1D array
   let minmum = Infinity;
 
-  lis.forEach(elt => minmum = (elt < minmum) ? elt : minmum)
+  lis.forEach((elt) => (minmum = elt < minmum ? elt : minmum));
 
   return minmum;
 }

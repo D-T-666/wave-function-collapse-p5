@@ -1,4 +1,4 @@
-const createDrawCell = _ => {
+const createDrawCell = (_) => {
   if (Number(url_params.stitches || "0")) {
     widthDivider = 28;
     heightDivider = 22;
@@ -23,9 +23,17 @@ const createDrawCell = _ => {
   } else {
     widthDivider = 24;
     heightDivider = 24;
-    drawCell = (x, y, w, h) => {
+    drawCell = (x, y, w, h, b = false) => {
       noStroke();
-      rect(x + tileSpacing / 2, y + tileSpacing / 2, w - tileSpacing, h - tileSpacing, tileBorderRadius);
-    }
+      b
+        ? rect(x, y, w, h, tileBorderRadius)
+        : rect(
+            x + tileSpacing / 2,
+            y + tileSpacing / 2,
+            w - tileSpacing,
+            h - tileSpacing,
+            tileBorderRadius
+          );
+    };
   }
-}
+};
