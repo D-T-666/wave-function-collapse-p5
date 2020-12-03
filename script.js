@@ -14,7 +14,7 @@ let drawCell;
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
-  randomSeed(0);
+  // randomSeed(0);
   url_params = getURLParams();
   displayBackgroundTiles = Number(url_params.dbt || "0");
   createDrawCell();
